@@ -36,7 +36,7 @@
 name: Update File and Push
 
 on:
-  push:
+  workflow_dispatch:
     branches:
       - main
 
