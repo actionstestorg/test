@@ -101,7 +101,7 @@ jobs:
         
       - name: Push changes to protected branch
         env:
-          PAT_TOKEN: ${{ secrets.PAT }}
+          PAT_TOKEN: ${{ secrets.PAT2 }}
         run: |
-          git remote set-url origin https://x-access-token:${{ secrets.PAT }}@github.com/${{ github.repository }}.git
-          git push --force origin HEAD:test 
+          git remote set-url origin https://x-access-token:${{ secrets.PAT2 }}@github.com/${{ github.repository }}.git
+          git push origin HEAD:test 
