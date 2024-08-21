@@ -6,26 +6,29 @@ on:
         PAT:
             required: true
     branches:
-      - main
+      - test
 
 jobs:
   update-file:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
     - name: Update file content
       run: |
         echo "New content" > test.txt
 
-    - name: Commit the bumped app package.json
-      env: 
-        REPO_URL: github.com/SaurabhTalele-Bentley/test
+    - name: Commit changes
       run: |
-        git init
-        git config --global user.email "Saurabh.Talele@bentley.com "
-        git config --global user.name "Saurabh Talele"
-        git add .
-        git commit -m "Bump app version (automated)"
-        git push "https://${{secrets.PAT}}@${{ env.REPO_URL }}" test
+        git config --global user.name 'saurabh talele'
+        git config --global user.email 'Saurabh.Talele@netley.com'
+        git add test.txt
+        git commit -m "Update file content"
 
-    
+    - name: Push changes
+      uses: ad-m/github-push-action@v0.6.0
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: test
