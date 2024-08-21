@@ -26,6 +26,6 @@ jobs:
         git config --global user.name "Saurabh Talele"
         git add .
         git commit -m "Bump app version (automated)"
-        git push "https://${{secrets.PAT}}@${{ env.REPO_URL }}"
+        git push "https://${{secrets.PAT}}@${{ env.REPO_URL }}" test
 
     
