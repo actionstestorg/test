@@ -1,0 +1,35 @@
+name: Update File and Push
+
+on:
+  workflow_dispatch:
+    secrets:
+        PAT:
+            required: true
+    branches:
+      - test
+
+jobs:
+  update-file:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Update file content
+      run: |
+        echo ${{secrets.PAT}}
+        echo "New content" > test.txt
+
+    - name: Commit changes
+      run: |
+        git config --global user.name saurabh talele
+        git config --global user.email Saurabh.Talele@bentley.com
+        git add test.txt
+        git commit -m "Update file content"
+
+    - name: Push changes
+      uses: ad-m/github-push-action@v0.6.0
+      with:
+        github_token: ${{ secrets.PAT }}
+        branch: test
