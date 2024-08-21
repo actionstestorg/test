@@ -104,4 +104,4 @@ jobs:
           PAT_TOKEN: ${{ secrets.PAT }}
         run: |
           git remote set-url origin https://x-access-token:${{ secrets.PAT }}@github.com/${{ github.repository }}.git
-          git push origin HEAD:test 
+          git push --force origin HEAD:test 
