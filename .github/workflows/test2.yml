@@ -24,7 +24,7 @@ jobs:
         git init
         git config --global user.email "Saurabh.Talele@bentley.com "
         git config --global user.name "Saurabh Talele"
-        git add apps/dp-test-app/package.json
+        git add .
         git commit -m "Bump app version (automated)"
         git push "https://${{secrets.PAT}}@${{ env.REPO_URL }}"
 
