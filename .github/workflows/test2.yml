@@ -1,18 +1,48 @@
+# name: Update File and Push
+
+# on:
+#   workflow_dispatch:
+#     secrets:
+#         PAT:
+#             required: true
+#     branches:
+#       - test
+
+# jobs:
+#   update-file:
+#     runs-on: ubuntu-latest
+#     permissions:
+#       contents: write
+
+#     steps:
+#     - name: Checkout repository
+#       uses: actions/checkout@v2
+
+#     - name: Update file content
+#       run: |
+#         echo "New content" > test.txt
+
+#     - name: Commit changes
+#       env:
+#           REPO_URL: github.com/actionstestorg/test
+
+#       run: |
+#           git config --global user.email "Saurabh.Talele@bentley.com"
+#           git config --global user.name "Saurabh Talele"
+#           git add .
+#           git commit -m "Bump app version (automated)"
+#           git push "https://${{secrets.PAT_EXTENSION_SERVICE}}@${{ env.REPO_URL }}"
+
 name: Update File and Push
 
 on:
-  workflow_dispatch:
-    secrets:
-        PAT:
-            required: true
+  push:
     branches:
-      - test
+      - main
 
 jobs:
   update-file:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
 
     steps:
     - name: Checkout repository
@@ -22,13 +52,13 @@ jobs:
       run: |
         echo "New content" > test.txt
 
-    - name: Commit changes
-      env:
-          REPO_URL: github.com/actionstestorg/test
-
-      run: |
-          git config --global user.email "Saurabh.Talele@bentley.com"
-          git config --global user.name "Saurabh Talele"
-          git add .
-          git commit -m "Bump app version (automated)"
-          git push "https://${{secrets.PAT_EXTENSION_SERVICE}}@${{ env.REPO_URL }}"
+    - name: Commit and push changes
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: "Update file content"
+        branch: main
+        file_pattern: test.txt
+        commit_user_name: Saurabh Talele
+        commit_user_email: Saurabh.Talele@bentley.com
+        commit_author: Saurabh Talele <Saurabh.Talele@bentley.com>
+        token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
