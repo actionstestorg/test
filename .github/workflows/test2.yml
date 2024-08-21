@@ -62,6 +62,6 @@ jobs:
         branch: test
         file_pattern: test.txt
         commit_user_name: Saurabh Talele
-        commit_user_email: Saurabh.Talele@bentley.com
-        commit_author: Saurabh Talele <Saurabh.Talele@bentley.com>
-        token: ${{ secrets.PAT }}
+        commit_user_email: saurabhatalele@gmail.com
+        commit_author: Saurabh Talele <saurabhatalele@gmail.com>
+        token: ${{ secrets.PAT_KEY }}
