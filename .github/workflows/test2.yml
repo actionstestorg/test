@@ -24,7 +24,7 @@ jobs:
 
     - name: Commit changes
       env:
-          REPO_URL: github.com/iTwin/drawing-production
+          REPO_URL: github.com/actionstestorg/test
 
       run: |
           git config --global user.email "imodeljs-admin@users.noreply.github.com"
