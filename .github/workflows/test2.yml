@@ -21,6 +21,7 @@ jobs:
       env: 
         REPO_URL: github.com/SaurabhTalele-Bentley/test
       run: |
+        git init
         git config --global user.email "Saurabh.Talele@bentley.com "
         git config --global user.name "Saurabh Talele"
         git add apps/dp-test-app/package.json
