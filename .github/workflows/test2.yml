@@ -51,8 +51,8 @@
 # jobs:
 #   update-file:
 #     runs-on: ubuntu-latest
-#     permissions:
-#       contents: write
+    # permissions:
+    #   contents: write
 
 #     steps:
 #     - name: Checkout repository
@@ -82,6 +82,8 @@ on:
 jobs:
   update-protected-branch:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
