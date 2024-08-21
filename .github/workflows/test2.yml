@@ -33,35 +33,73 @@
 #           git commit -m "Bump app version (automated)"
 #           git push "https://${{secrets.PAT_EXTENSION_SERVICE}}@${{ env.REPO_URL }}"
 
-name: Update File and Push
 
-on:
-  workflow_dispatch:
-    branches:
-      - test
+
+# ____________________________________________________________________________________________________________
+
+
+
+
+# name: Update File and Push
+
+# on:
+#   workflow_dispatch:
+#     branches:
+#       - test
     
 
+# jobs:
+#   update-file:
+#     runs-on: ubuntu-latest
+#     permissions:
+#       contents: write
+
+#     steps:
+#     - name: Checkout repository
+#       uses: actions/checkout@v2
+
+#     - name: Update file content
+#       run: |
+#         echo "New content" > test.txt
+
+#     - name: Commit and push changes
+#       uses: stefanzweifel/git-auto-commit-action@v4
+#       with:
+#         commit_message: "Update file content"
+#         branch: test
+#         file_pattern: test.txt
+#         commit_user_name: Saurabh Talele
+#         commit_user_email: saurabhatalele@gmail.com
+#         commit_author: Saurabh Talele <saurabhatalele@gmail.com>
+#         token: ${{ secrets.PAT_KEY }}
+
+
+name: Direct Push to Protected Branch
+
+on:
+  workflow_dispatch: # This allows you to trigger the action manually
+
 jobs:
-  update-file:
+  update-protected-branch:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Update file content
-      run: |
-        echo "New content" > test.txt
+      - name: Make changes
+        run: |
+          echo "Updated content on $(date)" >> test.txt
 
-    - name: Commit and push changes
-      uses: stefanzweifel/git-auto-commit-action@v4
-      with:
-        commit_message: "Update file content"
-        branch: test
-        file_pattern: test.txt
-        commit_user_name: Saurabh Talele
-        commit_user_email: saurabhatalele@gmail.com
-        commit_author: Saurabh Talele <saurabhatalele@gmail.com>
-        token: ${{ secrets.PAT_KEY }}
+      - name: Commit changes
+        run: |
+          git config --global user.name "Saurabh Talele"
+          git config --global user.email "Saurabh.Talele@bentley.com"
+          git add .
+          git commit -m "Automated update on $(date)"
+        
+      - name: Push changes to protected branch
+        env:
+          PAT_TOKEN: ${{ secrets.PAT }}
+        run: |
+          git remote set-url origin https://x-access-token:${{ secrets.PAT }}@github.com/${{ github.repository }}.git
+          git push origin HEAD:test 
