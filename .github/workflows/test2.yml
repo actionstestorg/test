@@ -15,7 +15,7 @@ jobs:
     steps:
     - name: Update file content
       run: |
-        echo "New content" > path/to/your/file.txt
+        echo "New content" > test.txt
 
     - name: Commit the bumped app package.json
       env: 
