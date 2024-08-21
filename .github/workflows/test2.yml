@@ -23,8 +23,8 @@ jobs:
 
     - name: Commit changes
       run: |
-        git config --global user.name 'saurabh talele'
-        git config --global user.email 'Saurabh.Talele@bentley.com'
+        git config --global user.name saurabh talele
+        git config --global user.email Saurabh.Talele@bentley.com
         git add test.txt
         git commit -m "Update file content"
 
