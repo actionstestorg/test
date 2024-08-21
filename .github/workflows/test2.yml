@@ -61,4 +61,4 @@ jobs:
         commit_user_name: Saurabh Talele
         commit_user_email: Saurabh.Talele@bentley.com
         commit_author: Saurabh Talele <Saurabh.Talele@bentley.com>
-        token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        token: ${{ secrets.PAT }}
