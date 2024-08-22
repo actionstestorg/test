@@ -101,4 +101,4 @@ jobs:
           git add .
           git commit -m "Automated update on $(date)"
           git remote set-url origin https://${{env.PAT_TOKEN}}@github.com/${{ github.repository }}.git
-          git push origin HEAD:test 
+          git push origin test 
