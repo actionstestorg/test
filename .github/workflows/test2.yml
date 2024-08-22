@@ -103,5 +103,5 @@ jobs:
         env:
           PAT_TOKEN: ${{ secrets.PAT }}
         run: |
-          git remote set-url origin https://${{ secrets.PAT }}@github.com/${{ github.repository }}.git
+          git remote set-url origin https://$(GITHUB_TOKEN)@github.com/${{ github.repository }}.git
           git push origin HEAD:test 
