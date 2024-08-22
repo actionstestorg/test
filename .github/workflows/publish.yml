@@ -1,8 +1,7 @@
-name: 'Example workflow'
+name: "Example workflow"
 
 on:
   workflow_dispatch:
-  
 
 jobs:
   example:
@@ -12,16 +11,18 @@ jobs:
       GITHUB_REPOSITORY: ${{ github.repository }}
 
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Make changes
-      run: |
-        echo "Updated content on $(date)" >> test.txt
-        git add .
-        git commit -m "New change"
+      - name: Make changes
+        run: |
+          echo "Updated content on $(date)" >> test.txt
+          git config --local user.name "Saurabh Talele"
+          git config --local user.email "Saurabh.Talele@bentley.com"
+          git add .
+          git commit -m "New change"
 
-    - name: Protected branch commit
-      uses: CasperWA/push-protected@v2
-      with:
-        token: ${{ secrets.PAT }}
-        branch: test
+      - name: Protected branch commit
+        uses: CasperWA/push-protected@v2
+        with:
+          token: ${{ secrets.PAT }}
+          branch: test
