@@ -1,0 +1,18 @@
+name: 'Example workflow'
+
+on:
+  workflow_dispatch:
+  
+
+jobs:
+  example:
+    runs-on: ubuntu-20.04
+    env:
+      GIT_APP_TOKEN: ${{ secrets.PAT }}
+      GITHUB_REPOSITORY: ${{ github.repository }}
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Protected branch commit
+      uses: augustonascimentos/commit_and_push_to_protected_branch@v1
