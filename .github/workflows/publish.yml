@@ -20,3 +20,7 @@ jobs:
 
     - name: Protected branch commit
       uses: augustonascimentos/commit_and_push_to_protected_branch@v1
+      with:
+        branch: test 
+        commit_message: "HEllo test run"
+        github_token: ${{secrets.PAT}}
