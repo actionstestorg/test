@@ -96,14 +96,8 @@ jobs:
         run: |
           git config --global user.name "Saurabh Talele"
           git config --global user.email "saurabhatalele@gmail.com"
-
-          git init 
-          git remote remove origin
-          git remote add origin https://github.com/actionstestorg/test.git
           git add .
           git commit -m "Automated update on $(date)"
-          git config --get user.name
-          git config --get user.email
           git push -u origin test
         
       
