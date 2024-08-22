@@ -95,9 +95,13 @@ jobs:
       - name: Commit changes
         run: |
           git config --global user.name "Saurabh Talele"
-          git config --global user.email "saurabhatalele@gmail.com"
+          git config --global user.email "Saurabh.Talele@bentley.com"
           git add .
           git commit -m "Automated update on $(date)"
-          git push -u origin test
         
-      
+      - name: Push changes to protected branch
+        env:
+          PAT_TOKEN: ${{ secrets.PAT }}
+        run: |
+          git remote set-url origin https://x-access-token:${{ secrets.PAT }}@github.com/${{ github.repository }}.git
+          git push origin HEAD:test 
