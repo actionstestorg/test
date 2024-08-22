@@ -95,7 +95,7 @@ jobs:
       - name: Commit changes
         run: |
           git config --global user.name "Saurabh Talele"
-          git config --global user.email "Saurabh.Talele@bentley.com"
+          git config --global user.email "saurabhatalele@gmail.com"
           git add .
           git commit -m "Automated update on $(date)"
         
