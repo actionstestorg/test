@@ -81,6 +81,8 @@ on:
     secrets:
       PAT:
         required: true
+      ACCESS_TOKEN:
+        required: true
 
 jobs:
   update-protected-branch:
@@ -105,7 +107,7 @@ jobs:
           git remote add origin https://github.com/${{ github.repository }}.git
           git add .
           git commit -m "Automated update on $(date)"
-          git push origin test 
+          git push "https://${{secrets.ACCESS_TOKEN}}@${{ github.repository }}" test 
         env:
           PAT_TOKEN: ${{ secrets.PAT }}
 
