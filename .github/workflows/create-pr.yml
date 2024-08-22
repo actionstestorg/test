@@ -41,6 +41,12 @@ jobs:
           pr_title: "[Example] Simple demo"
 
 
+      - name: Merge pull request
+        uses: gsoc2/automerge-action@v0.16.3
+        with:
+            pull-request: ${{ steps.create_pr.outputs.pr_number }}
+            token: ${{ secrets.PAT }}
+
         # uses: peter-evans/create-pull-request@v6
     
         # with:
