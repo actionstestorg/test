@@ -18,7 +18,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          ref: test
+          ref: test2
 
       - name: Create new branch
         run: |
