@@ -100,14 +100,13 @@ jobs:
       - shell: pwsh
         
         run: |
-          echo ${{env.PAT_TOKEN}}
           git config --local user.name "Saurabh Talele"
           git config --local user.email "Saurabh.Talele@bentley.com"
           git remote remove origin 
           git remote add origin https://github.com/${{ github.repository }}.git
           git add .
           git commit -m "Automated update on $(date)"
-          git push "https://${{secrets.ACCESS_TOKEN}}@${{ github.repository }}" test 
+          git push "https://${{secrets.ACCESS_TOKEN}}@github.com/${{ github.repository }}.git" test 
         env:
           PAT_TOKEN: ${{ secrets.PAT }}
 
