@@ -32,7 +32,7 @@ jobs:
         id: create_pr
         uses: peter-evans/create-pull-request@v5
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PAT }}
           base: test
           head: ${{ steps.create-pull-request.outputs.branch }}
           title: "Pull request from test branch"
