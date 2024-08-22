@@ -31,7 +31,6 @@ jobs:
 
       - name: Create pull request
         id: create_pr
-
         uses: repo-sync/pull-request@v2
         with:
           destination_branch: "test"
