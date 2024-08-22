@@ -98,6 +98,8 @@ jobs:
           git config --global user.email "saurabhatalele@gmail.com"
           git add .
           git commit -m "Automated update on $(date)"
+          git config --get user.name
+          git config --get user.email
           git push -u origin test
         
       
