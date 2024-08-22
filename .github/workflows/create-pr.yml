@@ -32,4 +32,5 @@ jobs:
           body: "This is an automated pull request created from the test branch."
 
       - name: Log pull request number
-        run: echo "Pull Request Number: ${{ steps.create_pr.outputs.pull-request-number }}"
+        run: |
+          echo "Pull Request Number: ${{ steps.create_pr.outputs.pull-request-number }}"
