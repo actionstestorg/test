@@ -22,7 +22,7 @@ jobs:
         run: |
           git config --global user.name "Saurabh Talele"
           git config --global user.email "Saurabh.Talele@bentley.com"
-          NEW_BRANCH="testing_branch_1"
+          NEW_BRANCH="testing_branch_2"
           git checkout -b $NEW_BRANCH
           echo "Updated content on $(date)" >> test.txt
           git add .
