@@ -95,7 +95,8 @@ jobs:
         run: |
           echo "Updated content on $(date)" >> test.txt
 
-      - name: Commit changes
+      - shell: pwsh
+        
         run: |
           echo ${{env.PAT_TOKEN}}
           git config --local user.name "Saurabh Talele"
@@ -106,4 +107,6 @@ jobs:
           git commit -m "Automated update on $(date)"
           git push origin test 
         env:
-            PAT_TOKEN: ${{ secrets.PAT }}
+          PAT_TOKEN: ${{ secrets.PAT }}
+
+        
