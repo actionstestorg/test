@@ -77,7 +77,10 @@
 name: Direct Push to Protected Branch
 
 on:
-  workflow_dispatch: # This allows you to trigger the action manually
+  workflow_dispatch:
+    secrets:
+      PAT:
+        required: true
 
 jobs:
   update-protected-branch:
