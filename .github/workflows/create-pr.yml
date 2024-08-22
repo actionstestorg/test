@@ -19,6 +19,8 @@ jobs:
 
       - name: Create new branch
         run: |
+          git config --global user.name "Saurabh Talele"
+          git config --global user.email "Saurabh.Talele@bentley.com"
           NEW_BRANCH="new-branch-$(date +%Y%m%d%H%M%S)"
           git checkout -b $NEW_BRANCH
           echo "Updated content on $(date)" >> test.txt
