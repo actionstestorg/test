@@ -93,15 +93,12 @@ jobs:
           echo "Updated content on $(date)" >> test.txt
 
       - name: Commit changes
+        env:
+            PAT_TOKEN: ${{ secrets.PAT }}
         run: |
           git config --global user.name "Saurabh Talele"
           git config --global user.email "Saurabh.Talele@bentley.com"
           git add .
           git commit -m "Automated update on $(date)"
-        
-      - name: Push changes to protected branch
-        env:
-          PAT_TOKEN: ${{ secrets.PAT }}
-        run: |
           git remote set-url origin https://${{env.PAT_TOKEN}}@github.com/${{ github.repository }}.git
           git push origin HEAD:test 
