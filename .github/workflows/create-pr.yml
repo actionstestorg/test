@@ -33,7 +33,7 @@ jobs:
         id: create_pr
         uses: repo-sync/pull-request@v2
         with:
-          destination_branch: test
+          destination_branch: testing_branch
           github_token: ${{ secrets.PAT }}
           pr_label: "feature, automated pr"
           pr_title: "[Example] Simple demo"
