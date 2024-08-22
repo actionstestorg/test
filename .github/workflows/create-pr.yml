@@ -30,14 +30,21 @@ jobs:
 
       - name: Create pull request
         id: create_pr
-        uses: peter-evans/create-pull-request@v5
+        uses: quangvo09/create-pull-request-action@v1.0.1
         with:
-          token: ${{ secrets.PAT }}
-          base: test
-          head: ${{ steps.create-pull-request.outputs.branch }}
-          title: "Pull request from test branch"
-          body: "This is an automated pull request created from the test branch."
+          github_token: ${{secrets.PAT}}
+          base_branch: test
+          labels: test  label
+          
+    
+      #   uses: peter-evans/create-pull-request@v5
+      #   with:
+      #     token: ${{ secrets.PAT }}
+      #     base: test
+      #     head: ${{ steps.create-pull-request.outputs.branch }}
+      #     title: "Pull request from test branch"
+      #     body: "This is an automated pull request created from the test branch."
 
-      - name: Log pull request number
-        run: |
-          echo "Pull Request Number: ${{ steps.create_pr.outputs.pull-request-number }}"
+      # - name: Log pull request number
+      #   run: |
+      #     echo "Pull Request Number: ${{ steps.create_pr.outputs.pull-request-number }}"
