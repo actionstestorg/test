@@ -30,7 +30,8 @@ jobs:
 
       - name: Create pull request
         id: create_pr
-        uses: quangvo09/create-pull-request-action@v1.0.1
+        uses: emiliopedrollo/create-pull-request@v2.0.0
+    
         with:
           github_token: ${{secrets.PAT}}
           base_branch: test
