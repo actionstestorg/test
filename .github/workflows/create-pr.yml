@@ -31,6 +31,15 @@ jobs:
 
       - name: Create pull request
         id: create_pr
+
+        uses: repo-sync/pull-request@v2
+        with:
+          destination_branch: "test"
+          github_token: ${{ secrets.PAT }}
+          pr_label: "feature, automated pr"
+          pr_title: "[Example] Simple demo"
+
+
         # uses: peter-evans/create-pull-request@v6
     
         # with:
@@ -39,14 +48,14 @@ jobs:
           
 
     
-        uses: peter-evans/create-pull-request@v5
-        with:
-          token: ${{ secrets.PAT }}
-          base: test
-          head: ${{ steps.create-pull-request.outputs.branch }}
-          title: "Pull request from test branch"
-          body: "This is an automated pull request created from the test branch."
-          commiter: Saurabh.Talele@bentley.com
+        # uses: peter-evans/create-pull-request@v5
+        # with:
+        #   token: ${{ secrets.PAT }}
+        #   base: test
+        #   head: ${{ steps.create-pull-request.outputs.branch }}
+        #   title: "Pull request from test branch"
+        #   body: "This is an automated pull request created from the test branch."
+        #   commiter: Saurabh.Talele@bentley.com
       - name: Log pull request number
         run: |
           echo "Pull Request Number: ${{ steps.create_pr.outputs.pull-request-number }}"
