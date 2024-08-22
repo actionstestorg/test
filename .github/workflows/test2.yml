@@ -96,8 +96,8 @@ jobs:
         env:
             PAT_TOKEN: ${{ secrets.PAT }}
         run: |
-          git config --global user.name "Saurabh Talele"
-          git config --global user.email "Saurabh.Talele@bentley.com"
+          git config --local user.name "Saurabh Talele"
+          git config --local user.email "Saurabh.Talele@bentley.com"
           git add .
           git commit -m "Automated update on $(date)"
           git remote set-url origin https://${{env.PAT_TOKEN}}@github.com/${{ github.repository }}.git
