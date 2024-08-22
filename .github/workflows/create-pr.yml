@@ -57,4 +57,4 @@ jobs:
         #   commiter: Saurabh.Talele@bentley.com
       - name: Log pull request number
         run: |
-          echo "Pull Request Number: ${{ steps.create_pr.outputs.pull-request-number }}"
+          echo "Pull Request Number: ${{ steps.create_pr.outputs.pr_number }}"
