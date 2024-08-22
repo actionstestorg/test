@@ -96,9 +96,8 @@ jobs:
           echo "Updated content on $(date)" >> test.txt
 
       - name: Commit changes
-        env:
-            PAT_TOKEN: ${{ secrets.PAT }}
         run: |
+          echo ${{env.PAT_TOKEN}}
           git config --local user.name "Saurabh Talele"
           git config --local user.email "Saurabh.Talele@bentley.com"
           git remote remove origin 
@@ -106,3 +105,5 @@ jobs:
           git add .
           git commit -m "Automated update on $(date)"
           git push origin test 
+        env:
+            PAT_TOKEN: ${{ secrets.PAT }}
