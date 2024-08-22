@@ -14,5 +14,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: Make changes
+      run: |
+        echo "Updated content on $(date)" >> test.txt
+
     - name: Protected branch commit
       uses: augustonascimentos/commit_and_push_to_protected_branch@v1
