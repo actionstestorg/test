@@ -23,3 +23,10 @@ jobs:
         uses: hmarr/auto-approve-action@v4
         with:
           github-token: ${{ secrets.PAT2 }}
+
+      - name: Auto merge PR
+        uses: pascalgn/automerge-action@v0.16.3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          merge-method: merge
+          merge-title: automerge Release
