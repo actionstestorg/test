@@ -22,4 +22,4 @@ jobs:
           git add .
           git commit -m "New change"
         env:
-          BRANCH: saurabh-$(date +'%Y-%m-%d')
+          BRANCH: saurabh-$(date +'%Y-%m-%d')run-${{ github.run_number }}
