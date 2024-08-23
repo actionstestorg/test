@@ -35,10 +35,10 @@ jobs:
         with:
           source_branch: ${{github.ref_name}}
           destination_branch: test
-          labels: "release"
+          pr_label: "release"
           github_token: ${{ secrets.PAT }}
-          pr_title: "[Example] Simple demo"
-          reviewers: "SaurabhTalele-Bentley"
+          pr_title: "Release PR"
+          pr_reviewers: "SaurabhTalele-Bentley"
 
 
         # uses: peter-evans/create-pull-request@v6
