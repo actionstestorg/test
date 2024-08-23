@@ -1,9 +1,6 @@
 name: Create Pull Request from Test Branch
 
 on:
-  push:
-    branches:
-      - test
   workflow_dispatch:
 
 
@@ -41,22 +38,22 @@ jobs:
           pr_reviewer: "SaurabhTalele-Bentley"
 
 
-        # uses: peter-evans/create-pull-request@v6
-    
-        # with:
-        #   github_token: ${{secrets.PAT}}
-        #   base_branch: test
-          
-
-    
-        # uses: peter-evans/create-pull-request@v5
-        # with:
-        #   token: ${{ secrets.PAT }}
-        #   base: test
-        #   head: ${{ steps.create-pull-request.outputs.branch }}
-        #   title: "Pull request from test branch"
-        #   body: "This is an automated pull request created from the test branch."
-        #   commiter: Saurabh.Talele@bentley.com
+      - name: Approve PR
+        uses: hmarr/auto-approve-action@v4
+        with:
+            github-token: ${{ secrets.PAT2 }}
+            pull-request-number: ${{ steps.create_pr.outputs.pr_number }}
+  
+      - name: Auto merge PR
+        uses: pascalgn/automerge-action@v0.16.3
+         
+        env:
+            GITHUB_TOKEN: ${{secrets.PAT2}}
+            MERGE_COMMIT_MESSAGE: "AUTO MERGER"
+            MERGE_METHOD: merge
+            MERGE_LABELS: "release" 
+            
+            
       - name: Log pull request number
         run: |
           echo "Pull Request Number: ${{ steps.create_pr.outputs.pr_number }}"
