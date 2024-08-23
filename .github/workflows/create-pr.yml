@@ -24,19 +24,16 @@ jobs:
         run: |
           git config --global user.name "Saurabh Talele"
           git config --global user.email "Saurabh.Talele@bentley.com"
-          NEW_BRANCH="testing_branch_2"
-          git checkout -b $NEW_BRANCH
           echo "Updated content on $(date)" >> test.txt
           git add .
           git commit -m "Automated update on $(date)"
-          git push origin $NEW_BRANCH
+          git push origin ${{github.base_ref}}
 
       - name: Create pull request
         id: create_pr
         uses: repo-sync/pull-request@v2
         with:
-          source_branch: testing_branch_2
-          destination_branch: testing_branch_1
+          destination_branch: test
           github_token: ${{ secrets.PAT }}
           pr_label: "feature, automated pr"
           pr_title: "[Example] Simple demo"
