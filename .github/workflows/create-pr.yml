@@ -18,7 +18,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          ref: test
+          ref: $(git rev-parse --abbrev-ref HEAD)
 
       - name: Create new branch
         run: |
@@ -27,7 +27,7 @@ jobs:
           echo "Updated content on $(date)" >> test.txt
           git add .
           git commit -m "Automated update on $(date)"
-          git push origin ${{github.base_ref}}
+          git push origin $(git rev-parse --abbrev-ref HEAD)
 
       - name: Create pull request
         id: create_pr
