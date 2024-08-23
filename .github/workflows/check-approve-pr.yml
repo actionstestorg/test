@@ -13,5 +13,5 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Run a script
+      - name: Run a script on pr
         run: echo "This PR is labeled with 'release'. Running the workflow..."
