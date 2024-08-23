@@ -26,9 +26,9 @@ jobs:
 
       - name: Auto merge PR
         uses: pascalgn/automerge-action@v0.16.3
-        with:
-          github-token: ${{ secrets.PAT2 }}
-          merge-method: merge
-          merge-title: automerge Release
+       
         env:
           GITHUB_TOKEN: ${{secrets.PAT2}}
+          MERGE_COMMIT_MESSAGE: "AUTO MERGER"
+          MERGE_METHOD: merge
+          MERGE_LABELS: "release"
