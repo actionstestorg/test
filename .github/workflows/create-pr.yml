@@ -35,7 +35,7 @@ jobs:
           pr_label: "release"
           github_token: ${{ secrets.PAT }}
           pr_title: "Release PR"
-          pr_reviewer: SaurabhTalele-Bentley SaurabhATalele
+          pr_reviewers: SaurabhTalele-Bentley,SaurabhATalele
 
 
       # - name: Approve PR
