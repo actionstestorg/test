@@ -8,6 +8,8 @@ jobs:
   run-on-release-label:
     if: contains(github.event.pull_request.labels.*.name, 'release')
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
 
     steps:
       - name: Checkout repository
@@ -15,3 +17,9 @@ jobs:
 
       - name: Run a script on pr
         run: echo "This PR is labeled with 'release'. Running the workflow..."
+      
+
+      - name: Approve PR
+        uses: hmarr/auto-approve-action@v4
+        with:
+          github-token: ${{ secrets.SERVIVCE_USER_PAT }}
