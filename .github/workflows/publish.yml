@@ -9,6 +9,7 @@ jobs:
     env:
       GIT_APP_TOKEN: ${{ secrets.PAT }}
       GITHUB_REPOSITORY: ${{ github.repository }}
+      BRANCH: saurabh-$(date +'%Y-%m-%d')-run-${{ github.run_number }}
 
     steps:
       - uses: actions/checkout@v2
@@ -21,5 +22,4 @@ jobs:
           git config --local user.email "Saurabh.Talele@bentley.com"
           git add .
           git commit -m "New change"
-        env:
-          BRANCH: saurabh-$(date +'%Y-%m-%d')run-${{ github.run_number }}
+          
