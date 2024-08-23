@@ -22,4 +22,4 @@ jobs:
       - name: Approve PR
         uses: hmarr/auto-approve-action@v4
         with:
-          github-token: ${{ secrets.SERVIVCE_USER_PAT }}
+          github-token: ${{ secrets.PAT }}
