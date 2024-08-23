@@ -1,25 +1,101 @@
-name: "Example workflow"
+name: Publish App
 
 on:
   workflow_dispatch:
+    secrets:
+      ado_feed_pat_b64:
+        required: true
+      APP_PUBLISHER_SECRET_PROD:
+        required: true
+      APP_PUBLISHER_CLIENT_ID_PROD:
+        required: true
+      PAT_EXTENSION_SERVICE:
+        required: true
 
 jobs:
-  example:
-    runs-on: ubuntu-20.04
+  publish_app:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    timeout-minutes: 10
     env:
-      GIT_APP_TOKEN: ${{ secrets.PAT }}
-      GITHUB_REPOSITORY: ${{ github.repository }}
-      BRANCH: saurabh-$(date +'%Y-%m-%d')-run-${{ github.run_number }}
+      PUBLISH_NAME: publish-dp-test-app-$(date +'%Y-%m-%d')-run-${{ github.run_number }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.head_ref }}
 
-      - name: Make changes
+      - uses: pnpm/action-setup@v4.0.0
+        name: Install pnpm
+        id: pnpm-install
+        with:
+          version: 8.15.7 # locked to workaround issue with postinstall-build in CI in 8.10.0
+          run_install: false
+
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4.0.2
+        with:
+          node-version: 20.x
+
+      - name: config internal registry
         run: |
-          echo "Updated content on $(date)" >> test.txt
-          echo ${{env.BRANCH}}
-          git config --local user.name "Saurabh Talele"
-          git config --local user.email "Saurabh.Talele@bentley.com"
-          git add .
-          git commit -m "New change"
-          
+          pnpm config set "//pkgs.dev.azure.com/bentleycs/_packaging/Packages/npm/registry/:username"  "bentleycs"
+          pnpm config set "//pkgs.dev.azure.com/bentleycs/_packaging/Packages/npm/registry/:_password" "${{ secrets.ado_feed_pat_b64 }}"
+          pnpm config set "//pkgs.dev.azure.com/bentleycs/_packaging/Packages/npm/registry/:email"     "npm requires email to be set but doesn't use the value"
+          pnpm config set "//pkgs.dev.azure.com/bentleycs/_packaging/Packages/npm/:username"           "bentleycs"
+          pnpm config set "//pkgs.dev.azure.com/bentleycs/_packaging/Packages/npm/:_password"          "${{ secrets.ado_feed_pat_b64 }}"
+          pnpm config set "//pkgs.dev.azure.com/bentleycs/_packaging/Packages/npm/:email"              "npm requires email to be set but doesn't use the value"
+
+      - name: Install dependencies
+        run: pnpm i
+
+      - name: Build the package and app
+        run: pnpm build
+
+      - name: Bump the app version
+        working-directory: apps/dp-test-app
+        run: |
+          git checkout -b ${{env.PUBLISH_NAME}}
+          pnpm version patch
+
+      - name: Commit the bumped app package.json
+        env:
+          REPO_URL: github.com/iTwin/drawing-production
+
+        run: |
+          git config --global user.email "imodeljs-admin@users.noreply.github.com"
+          git config --global user.name "imodeljs-admin"
+          git add apps/dp-test-app/package.json
+          git commit -m "Bump app version (automated)"
+          git push origin ${{env.PUBLISH_NAME}}
+
+      - name: Create pull request
+        id: create_pr
+        uses: repo-sync/pull-request@v2
+        with:
+          source_branch: ${{env.PUBLISH_NAME}}
+          destination_branch: main
+          pr_label: "release"
+          github_token: ${{ secrets.PAT_TESTING }}
+          pr_title: "PR ${{env.PUBLISH_NAME}}"
+          pr_reviewer: ashish-srivastava-dev,Ellord207,williankbentley
+
+      - name: Approve PR
+        uses: hmarr/auto-approve-action@v4
+        with:
+          github-token: ${{ secrets.PAT_TESTING }}
+          pull-request-number: ${{ steps.create_pr.outputs.pr_number }}
+
+      - name: Auto merge PR
+        uses: pascalgn/automerge-action@v0.16.3
+
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_TESTING }}
+          MERGE_COMMIT_MESSAGE: "AUTO MERGER"
+          MERGE_METHOD: squash
+          MERGE_LABELS: "release"
+          PULL_REQUEST: ${{ steps.create_pr.outputs.pr_number }}
+
