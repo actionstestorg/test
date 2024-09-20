@@ -11,9 +11,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
     - name: Get commit history
       run: |
-        git branch
+        git pull origin test
         git log --pretty=format:"%h - %an, %ar : %s" > commit_history.txt
         cat commit_history.txt
 
