@@ -29,4 +29,4 @@ jobs:
         git log --pretty=format:"%h - %an, %ar : %s" | grep -i 'release' > Release_Commits.txt
         git add Release_Commits.txt 
         git commit -m "updated Release Commits file"
-        git push -u origin test
+        git push -u origin test-for-pr
