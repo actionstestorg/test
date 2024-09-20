@@ -16,7 +16,7 @@ jobs:
 
     - name: Get commit history
       run: |
-        git log --pretty=format:"%h - %an, %ar : %s" | grep -i 'release' > commit_history.txt
+        git log --pretty=format:"%h - %an, %ar : %s" > commit_history.txt
         cat commit_history.txt
 
     - name: Find commit with 'release'
