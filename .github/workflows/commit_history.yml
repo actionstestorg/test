@@ -17,6 +17,7 @@ jobs:
     - name: Get commit history
       run: |
         git pull origin test
+        git log
         git log --pretty=format:"%h - %an, %ar : %s" > commit_history.txt
         cat commit_history.txt
 
