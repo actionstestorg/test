@@ -3,7 +3,7 @@ name: Get Commit History
 on:
   push:
     branches:
-      - test
+      - main
   workflow_dispatch:
 
 jobs:
@@ -19,6 +19,6 @@ jobs:
         git log --pretty=format:"%h - %an, %ar : %s" > commit_history.txt
         cat commit_history.txt
 
-    - name: Find commit with 'release'
+    - name: Find commit ID with 'release'
       run: |
-        grep -i 'release' commit_history.txt
+        grep -i 'release' commit_history.txt | awk '{print $1}'
