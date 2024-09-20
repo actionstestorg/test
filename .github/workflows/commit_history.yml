@@ -1,0 +1,24 @@
+name: Get Commit History
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  get-commit-history:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Get commit history
+      run: |
+        git log --pretty=format:"%h - %an, %ar : %s" > commit_history.txt
+        cat commit_history.txt
+
+    - name: Find commit with 'release'
+      run: |
+        grep -i 'release' commit_history.txt
