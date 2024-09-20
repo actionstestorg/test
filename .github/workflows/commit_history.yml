@@ -18,9 +18,12 @@ jobs:
       run: |
         git fetch --unshallow
         git log
-        git log --pretty=format:"%h - %an, %ar : %s" > commit_history.txt
+        git log --pretty=format:"%h %s" > commit_history.txt
         cat commit_history.txt
 
     - name: Find commit with 'release'
       run: |
-        git log --pretty=format:"%h - %an, %ar : %s" | grep -i 'release'
+        git log --pretty=format:"%h - %an, %ar : %s" | grep -i 'release' > Release_Commits.txt
+        git add Release_Commits.txt 
+        git commit -m "updated Release Commits file"
+        git push -u origin test
