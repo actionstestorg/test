@@ -14,6 +14,11 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
+    - name: Get commit history
+      run: |
+        git log --pretty=format:"%h - %an, %ar : %s" | grep -i 'release' > commit_history.txt
+        cat commit_history.txt
+
     - name: Find commit with 'release'
       run: |
         git log --pretty=format:"%h - %an, %ar : %s" | grep -i 'release'
