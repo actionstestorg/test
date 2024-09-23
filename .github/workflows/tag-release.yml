@@ -22,12 +22,10 @@ jobs:
         cat release_commits.txt
         git config user.name "Saurabh Talele"
         git config user.email "Saurabh.Talele@bentley.com"
-
-    - name: Tag commits with 'release'
-      run: |
         while IFS= read -r line; do
           commit_id=$(echo $line | awk '{print $1}')
           tag_name=$(echo $line | awk '{print $NF}')
+          echo $NF
           git tag -a "$tag_name" -m "Tagging release commit" "$commit_id"
           git push origin "$tag_name"
         done < release_commits.txt
