@@ -34,4 +34,4 @@ jobs:
           tag_name=$(echo $line | awk '{print $NF}')
           git tag -a "$tag_name" -m "Tagging release commit" "$commit_id"
           git push origin "$tag_name"
-          done < release_commits.txt
+          done < Release_Commits.txt
