@@ -1,0 +1,31 @@
+name: Tag Release
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  tag-release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Get commit history with 'release'
+      id: get-commits
+      run: |
+        git fetch --unshallow
+        git log --pretty=format:"%h - %an, %ar : %s" | grep -i 'release' > release_commits.txt
+        cat release_commits.txt
+
+    - name: Tag commits with 'release'
+      run: |
+        while IFS= read -r line; do
+          commit_id=$(echo $line | awk '{print $1}')
+          tag_name=$(echo $line | awk '{print $NF}')
+          git tag -a "$tag_name" -m "Tagging release commit" "$commit_id"
+          git push origin "$tag_name"
+        done < release_commits.txt
