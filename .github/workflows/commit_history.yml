@@ -8,8 +8,11 @@ on:
 
 jobs:
   get-commit-history:
+    
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: write
+      actions: write
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
