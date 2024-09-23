@@ -25,8 +25,13 @@ jobs:
       run: |
         git config user.name "Saurabh Talele"
         git config user.email  "Saurabh.Talele@bentley.com"
-        git checkout -b test-for-pr
-        git log --pretty=format:"%h - %an, %ar : %s" | grep -i 'release' > Release_Commits.txt
-        git add Release_Commits.txt 
-        git commit -m "updated Release Commits file"
-        git push -u origin test-for-pr
+        git log --pretty=format:"%h %s" | grep -i 'release' > Release_Commits.txt  
+
+    - name: Tag commits with 'release'
+      run: |
+          while IFS= read -r line; do
+          commit_id=$(echo $line | awk '{print $1}')
+          tag_name=$(echo $line | awk '{print $NF}')
+          git tag -a "$tag_name" -m "Tagging release commit" "$commit_id"
+          git push origin "$tag_name"
+          done < release_commits.txt
