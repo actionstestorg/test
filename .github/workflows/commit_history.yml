@@ -11,6 +11,8 @@ jobs:
     
     runs-on: ubuntu-latest
     permissions:
+
+      workflows: write
       contents: write
       actions: write
     steps:
