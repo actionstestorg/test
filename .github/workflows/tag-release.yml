@@ -18,19 +18,20 @@ jobs:
       id: get-commits
       run: |
         git fetch --unshallow
-        git log --pretty=format:"%h - %an, %ar : %s" | grep -i 'release' > release_commits.txt
+        git log --pretty=format:"%h %s" | grep -i 'release' > release_commits.txt
         cat release_commits.txt
         git config user.name "Saurabh Talele"
         git config user.email "Saurabh.Talele@bentley.com"
         while IFS= read -r line; do
           commit_id=$(echo $line | awk '{print $1}')
-          tag_name=$(echo $line | awk '{print $NF}')
+          tag_name=$(echo $line | awk '{print $2}')
+          studio_dependency=$(echo $line | awk '{print $NF}')
           echo $NF
           if git rev-parse "$tag_name" >/dev/null 2>&1; then
             echo "Tag $tag_name already exists. Skipping..."
           else
-            git tag -a "$tag_name" -m "Tagging release commit" "$commit_id"
-            git push origin "$tag_name"
+            git tag -a "$tag_name_$studio_dependency" -m "Tagging release commit" "$commit_id"
+            git push origin "$tag_name_$studio_dependency"
           fi
         done < release_commits.txt
     
