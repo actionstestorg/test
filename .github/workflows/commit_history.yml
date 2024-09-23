@@ -35,3 +35,4 @@ jobs:
           git tag -a "$tag_name" -m "Tagging release commit" "$commit_id"
           git push origin "$tag_name"
           done < release_commits.txt
+          
