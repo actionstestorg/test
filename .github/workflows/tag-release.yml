@@ -26,7 +26,7 @@ jobs:
           commit_id=$(echo $line | awk '{print $1}')
           tag_name=$(echo $line | awk '{print $2}')
           studio_dependency=$(echo $line | awk '{print $NF}')
-          git tag -a "$tag_name $studio_dependency" -m "Tagging release commit" "$commit_id"
+          git tag -a "$tag_name_$studio_dependency" -m "Tagging release commit" "$commit_id"
           echo $NF
           if git rev-parse "$tag_name" >/dev/null 2>&1; then
             echo "Tag $tag_name already exists. Skipping..."
