@@ -1,0 +1,29 @@
+name: Check package.json
+
+on: 
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check-package-json:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        repository: actionstestorg/test2
+        token: ${{ secrets.TOEKN_3 }}
+
+    - name: Check for package.json
+      run: |
+        if [ -f package.json ]; then
+          echo "package.json exists."
+        else
+          echo "package.json does not exist."
+          exit 1
+        fi
