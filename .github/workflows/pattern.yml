@@ -17,7 +17,6 @@ jobs:
         git log --pretty=format:"%H %s" | grep -E "[0-9]+\.[0-9]+\.[0-9]+" > filtered_commits.txt
         echo "Filtered commits:"
         cat filtered_commits.txt
-        ls -l
 
     - name: Copy filtered commits to workspace
       run: cp filtered_commits.txt $GITHUB_WORKSPACE/commits.txt
@@ -36,10 +35,6 @@ jobs:
     
     - name: Compare versions
       run: |
-        ls -l
-        cd test2
-        ls -l 
-        cd ..
         if [ -f test2/package.json ]; then
           echo "package.json exists."
           package_version=$(jq -r '.version' test2/package.json)
