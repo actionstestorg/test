@@ -26,7 +26,6 @@ jobs:
             echo "package.json does not exist."
             exit 1
           fi
-      
-  
+
     - name: Print package.json
       run: cat package.json
