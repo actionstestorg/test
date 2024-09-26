@@ -15,8 +15,8 @@ jobs:
       run: |
 
         git fetch --unshallow
-        git log main --oneline
-        git log main --pretty=format:"%H %s" | grep -E "[0-9]+\.[0-9]+\.[0-9]+" > filtered_commits.txt
+        git log --oneline
+        git log --pretty=format:"%H %s" | grep -E "[0-9]+\.[0-9]+\.[0-9]+" > filtered_commits.txt
         echo "Filtered commits:"
         cat filtered_commits.txt
 
