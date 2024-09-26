@@ -1,12 +1,8 @@
 name: Check package.json
 
 on: 
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+  workflow_dispatch:
+
 
 jobs:
   check-package-json:
@@ -17,7 +13,8 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: actionstestorg/test2
-        token: ${{ secrets.TOEKN_3 }}
+        token: ${{ secrets.TOKEN_3 }}
+
 
     - name: Check for package.json
       run: |
@@ -27,3 +24,6 @@ jobs:
           echo "package.json does not exist."
           exit 1
         fi
+
+    - name: Print package.json
+      run: cat package.json
