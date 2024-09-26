@@ -40,11 +40,9 @@ jobs:
         cd test2
         ls -l 
         cd ..
-        if [ -f package.json ]; then
+        if [ -f test2/package.json ]; then
           echo "package.json exists."
-          cd test2
-          package_version=$(jq -r '.version' package.json)
-          cd ..
+          package_version=$(jq -r '.version' test2/package.json)
           echo "Package version: $package_version"
         else
           echo "package.json does not exist."
