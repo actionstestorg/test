@@ -20,7 +20,7 @@ jobs:
         ls -l
 
     - name: Copy filtered commits to workspace
-      run: cp filtered_commits.txt $GITHUB_WORKSPACE/filtered_commits.txt
+      run: cp filtered_commits.txt $GITHUB_WORKSPACE/commits.txt
 
     - name: Checkout another repository
       uses: actions/checkout@v2
@@ -67,4 +67,4 @@ jobs:
           }
           
           compare_versions "$package_version" "$version_string"
-        done < $GITHUB_WORKSPACE/filtered_commits.txt
+        done < $GITHUB_WORKSPACE/commits.txt
