@@ -43,6 +43,7 @@ jobs:
             git fetch --unshallow
             git log --pretty=format:"%H %s" | grep -E "[0-9]+\.[0-9]+\.[0-9]+" > filtered_commits.txt
             echo "success"
+
         
             while IFS= read -r line; do
             version_string=$(echo "$line" | grep -oP '\d+\.\d+\.\d+')
