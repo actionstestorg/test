@@ -32,6 +32,7 @@ jobs:
     
     - name: Compare versions
       run: |
+            ls -l
             if [ -f package.json ]; then
             echo "package.json exists."
             package_version=$(jq -r '.version' package.json)
