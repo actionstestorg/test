@@ -27,6 +27,7 @@ jobs:
       with:
         repository: actionstestorg/test2
         token: ${{ secrets.TOKEN_3 }}
+        path: test2
 
     - name: Set up Node.js
       uses: actions/setup-node@v3
