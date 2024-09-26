@@ -39,7 +39,7 @@ jobs:
         ls -l
         if [ -f package.json ]; then
           echo "package.json exists."
-          package_version=$(jq -r '.version' package.json)
+          package_version=$(jq -r '.version' test2/package.json)
           echo "Package version: $package_version"
         else
           echo "package.json does not exist."
