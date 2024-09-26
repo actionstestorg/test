@@ -16,14 +16,17 @@ jobs:
         token: ${{ secrets.TOKEN_3 }}
 
 
-    - name: Check for package.json
+    - name: Check for package.json and get version
       run: |
           if [ -f package.json ]; then
             echo "package.json exists."
+            package_version=$(jq -r '.version' package.json)
+            echo "Package version: $package_version"
           else
             echo "package.json does not exist."
             exit 1
           fi
+      
   
     - name: Print package.json
       run: cat package.json
