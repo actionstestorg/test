@@ -43,7 +43,7 @@ jobs:
         if [ -f package.json ]; then
           echo "package.json exists."
           cd test2
-          package_version=$(jq -r '.version' test2/package.json)
+          package_version=$(jq -r '.version' package.json)
           cd ..
           echo "Package version: $package_version"
         else
