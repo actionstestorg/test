@@ -54,6 +54,7 @@ jobs:
             IFS='.' read -r -a v2_parts <<< "$2"
             
             for i in "${!v1_parts[@]}"; do
+              git remote -v
               if [[ "${v1_parts[i]}" -gt "${v2_parts[i]}" ]]; then
                 echo "Package version ($package_version) is greater than commit version ($version_string)."
                 return
