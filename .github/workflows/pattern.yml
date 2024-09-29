@@ -8,23 +8,35 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
+    - name: Checkout another repository
+      uses: actions/checkout@v2
+      with:
+        repository: actionstestorg/test2
+        token: ${{ secrets.TOKEN_3 }}
+
     - name: Checkout repository
       uses: actions/checkout@v2
+      with:
+        path: test
 
     - name: Filter commits
       run: |
-
+        cd test
         git fetch --unshallow
         git log main --oneline
         git log main --pretty=format:"%H %s" | grep -E "[0-9]+\.[0-9]+\.[0-9]+" > filtered_commits.txt
         echo "Filtered commits:"
         cat filtered_commits.txt
+        cd ..
 
-    - name: Checkout repository
-      uses: actions/checkout@v2
-      with:
-          repository: actionstestorg/test2
-          token: ${{ secrets.TOKEN_3 }}
+    # - name: Checkout another repository
+    #   uses: actions/checkout@v2
+    #   with:
+    #     repository: actionstestorg/test2
+    #     token: ${{ secrets.TOKEN_3 }}
+    #     path: test2
+
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
@@ -32,42 +44,39 @@ jobs:
     
     - name: Compare versions
       run: |
-            if [ -f package.json ]; then
-            echo "package.json exists."
-            package_version=$(jq -r '.version' package.json)
-            echo "Package version: $package_version"
-            else
-                echo "package.json does not exist."
-                exit 1
-            fi
+        if [ -f package.json ]; then
+          echo "package.json exists."
+          package_version=$(jq -r '.version' package.json)
+          echo "Package version: $package_version"
+        else
+          echo "package.json does not exist."
+          exit 1
+        fi
 
-            git fetch --unshallow
-            git log --pretty=format:"%H %s" | grep -E "[0-9]+\.[0-9]+\.[0-9]+" > filtered_commits.txt
-            echo "success"
+        while IFS= read -r line; do
+          version_string=$(echo "$line" | grep -oP '\d+\.\d+\.\d+')
+          
+          echo "Commit message version: $version_string"
+          
+          compare_versions() {
+            IFS='.' read -r -a v1_parts <<< "$1"
+            IFS='.' read -r -a v2_parts <<< "$2"
+
+            
+            for i in "${!v1_parts[@]}"; do
+              git remote -v
+              if [[ "${v1_parts[i]}" -gt "${v2_parts[i]}" ]]; then
+                echo "Package version ($package_version) is greater than commit version ($version_string)."
+                return
+              elif [[ "${v1_parts[i]}" -lt "${v2_parts[i]}" ]]; then
+                echo "Package version ($package_version) is lesser than commit version ($version_string)."
+                return
+              fi
+            done
+            echo "Package version ($package_version) is the same as commit version ($version_string)."
+          }
+          
+          compare_versions "$package_version" "$version_string"
+        done < $test/filtered_commits.txt
 
         
-            while IFS= read -r line; do
-            version_string=$(echo "$line" | grep -oP '\d+\.\d+\.\d+')
-            
-            echo "Commit message version: $version_string"
-            
-            compare_versions() {
-                IFS='.' read -r -a v1_parts <<< "$1"
-                IFS='.' read -r -a v2_parts <<< "$2"
-                
-                for i in "${!v1_parts[@]}"; do
-                if [[ "${v1_parts[i]}" -gt "${v2_parts[i]}" ]]; then
-                    echo "Package version ($package_version) is greater than commit version ($version_string)."
-                    return
-                elif [[ "${v1_parts[i]}" -lt "${v2_parts[i]}" ]]; then
-                    echo "Package version ($package_version) is lesser than commit version ($version_string)."
-                    return
-                fi
-                done
-                echo "Package version ($package_version) is the same as commit version ($version_string)."
-            }
-            
-            compare_versions "$package_version" "$version_string"
-            done < filtered_commits.txt
-    
-
