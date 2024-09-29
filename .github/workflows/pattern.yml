@@ -24,7 +24,8 @@ jobs:
       run: |
         cd test
         git fetch --unshallow
-        git log --pretty=format:"%H %s" | grep -E "[0-9]+\.[0-9]+\.[0-9]+" > filtered_commits.txt
+        git log main --oneline
+        git log main --pretty=format:"%H %s" | grep -E "[0-9]+\.[0-9]+\.[0-9]+" > filtered_commits.txt
         echo "Filtered commits:"
         cat filtered_commits.txt
         cd ..
@@ -60,6 +61,7 @@ jobs:
           compare_versions() {
             IFS='.' read -r -a v1_parts <<< "$1"
             IFS='.' read -r -a v2_parts <<< "$2"
+
             
             for i in "${!v1_parts[@]}"; do
               git remote -v
