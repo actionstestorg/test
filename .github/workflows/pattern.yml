@@ -78,6 +78,6 @@ jobs:
           }
           
           compare_versions "$package_version" "$version_string"
-        done < $test/filtered_commits.txt
+        done < $./test/filtered_commits.txt
 
         
