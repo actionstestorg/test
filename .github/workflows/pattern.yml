@@ -75,12 +75,22 @@ jobs:
               fi
             done
             echo "Package version ($package_version) is the same as commit version ($version_string)."
-            echo "$line" | grep -oP '^\w+'
+            echo "$line" | grep -oP '^\w+' > commit_hash.txt
+            
 
 
           }
           
           compare_versions "$package_version" "$version_string"
         done < ./test/filtered_commits.txt
+
+    - name: cd to test and create pr from commit hash
+      run: |
+          cd test
+          cat ../commit_hash.txt
+          git checkout $(cat commit_hash.txt)
+          git checkout -b test-branch
+          git push origin test-branch
+          gh pr create --title "Test PR" --body "Test PR" --base main --head test-branch
 
         
