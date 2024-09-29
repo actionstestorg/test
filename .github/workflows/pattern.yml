@@ -93,4 +93,7 @@ jobs:
           git push origin test-branch
           gh pr create --title "Test PR" --body "Test PR" --base main --head test-branch
 
+      env:
+        GITHUB_TOKEN: ${{ secrets.TOKEN_3 }}
+
         
