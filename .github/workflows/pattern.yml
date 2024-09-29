@@ -75,6 +75,9 @@ jobs:
               fi
             done
             echo "Package version ($package_version) is the same as commit version ($version_string)."
+            echo "$line" | grep -oP '^\w+'
+
+
           }
           
           compare_versions "$package_version" "$version_string"
