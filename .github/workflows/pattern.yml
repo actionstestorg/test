@@ -8,25 +8,33 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-
-    - name: Filter commits
-      run: |
-        git fetch --unshallow
-        git log --pretty=format:"%H %s" | grep -E "[0-9]+\.[0-9]+\.[0-9]+" > filtered_commits.txt
-        echo "Filtered commits:"
-        cat filtered_commits.txt
-
-    - name: Copy filtered commits to workspace
-      run: cp filtered_commits.txt $GITHUB_WORKSPACE/commits.txt
 
     - name: Checkout another repository
       uses: actions/checkout@v2
       with:
         repository: actionstestorg/test2
         token: ${{ secrets.TOKEN_3 }}
-        path: test2
+
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        path: test
+
+    - name: Filter commits
+      run: |
+        cd test
+        git fetch --unshallow
+        git log --pretty=format:"%H %s" | grep -E "[0-9]+\.[0-9]+\.[0-9]+" > filtered_commits.txt
+        echo "Filtered commits:"
+        cat filtered_commits.txt
+        cd ..
+
+    # - name: Checkout another repository
+    #   uses: actions/checkout@v2
+    #   with:
+    #     repository: actionstestorg/test2
+    #     token: ${{ secrets.TOKEN_3 }}
+    #     path: test2
 
     - name: Set up Node.js
       uses: actions/setup-node@v3
@@ -35,9 +43,9 @@ jobs:
     
     - name: Compare versions
       run: |
-        if [ -f test2/package.json ]; then
+        if [ -f package.json ]; then
           echo "package.json exists."
-          package_version=$(jq -r '.version' test2/package.json)
+          package_version=$(jq -r '.version' package.json)
           echo "Package version: $package_version"
         else
           echo "package.json does not exist."
@@ -67,4 +75,6 @@ jobs:
           }
           
           compare_versions "$package_version" "$version_string"
-        done < $GITHUB_WORKSPACE/commits.txt
+        done < $test/commits.txt
+
+        
