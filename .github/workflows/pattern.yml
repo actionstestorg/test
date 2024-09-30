@@ -93,7 +93,6 @@ jobs:
           else
             echo "Failed to create PR."
           fi
-
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN_3 }}
 
