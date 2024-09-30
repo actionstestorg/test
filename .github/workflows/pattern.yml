@@ -77,10 +77,12 @@ jobs:
         run: |
           echo "creating a PR from the commit hash"
           cd test
+          commit_hash=$(cat ../commit_hash.txt)
+          commit_message=$(grep -w "^$commit_hash" cm.txt | cut -d' ' -f2-)
           cat ../commit_hash.txt
           git checkout $(cat ../commit_hash.txt)
-          git checkout -b test-branch
-          git push origin test-branch
+          git checkout -b $commit_message
+          git push origin $commit_message
           gh_pr_create_output=$(gh pr create --title "Test PR" --body "Test PR" --base main --head test-branch 2>&1)
           echo "$gh_pr_create_output"
           
