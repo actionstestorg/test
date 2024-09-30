@@ -85,7 +85,7 @@ jobs:
           git checkout $(cat ../commit_hash.txt)
           git checkout -b $commit_message
           git push origin $commit_message
-          gh_pr_create_output=$(gh pr create --title $commit_message --body "Test PR" --base main --head test-branch 2>&1)
+          gh_pr_create_output=$(gh pr create --title $commit_message --body "Test PR" --base main --head $commit_message 2>&1)
           echo "$gh_pr_create_output"
           
           if echo "$gh_pr_create_output" | grep -q "https://github.com/"; then
