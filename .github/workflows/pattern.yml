@@ -8,35 +8,34 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout another repository
+        uses: actions/checkout@v2
+        with:
+          repository: actionstestorg/test2
+          token: ${{ secrets.TOKEN_3 }}
 
-    - name: Checkout another repository
-      uses: actions/checkout@v2
-      with:
-        repository: actionstestorg/test2
-        token: ${{ secrets.TOKEN_3 }}
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          path: test
 
-    - name: Checkout repository
-      uses: actions/checkout@v2
-      with:
-        path: test
+      - name: Filter commits
+        run: |
+          cd test
+          git fetch --unshallow
+          git log --oneline
+          git log --pretty=format:"%H %s" | grep -E "[0-9]+\.[0-9]+\.[0-9]+" > filtered_commits.txt
+          echo "commits with the version numbers in drawing production repo:"
+          cat filtered_commits.txt
+          cd ..
 
-    - name: Filter commits
-      run: |
-        cd test
-        git fetch --unshallow
-        git log --oneline
-        git log --pretty=format:"%H %s" | grep -E "[0-9]+\.[0-9]+\.[0-9]+" > filtered_commits.txt
-        echo "commits with the version numbers in drawing production repo:"
-        cat filtered_commits.txt
-        cd ..
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16"
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '16'
-    
-    - name: Compare versions
-      run: |
+      - name: Compare versions
+        run: |
           if [ -f package.json ]; then
             echo "package.json exists."
             package_version=$(jq -r '.version' package.json)
@@ -45,15 +44,15 @@ jobs:
             echo "package.json does not exist in the studio repo."
             exit 1
           fi
-      
+
           while IFS= read -r line; do
             version_string=$(echo "$line" | grep -oP '\d+\.\d+\.\d+')
             echo "Drawing production Commit message version: $version_string"
-      
+
             compare_versions() {
               IFS='.' read -r -a v1_parts <<< "$1"
               IFS='.' read -r -a v2_parts <<< "$2"
-      
+
               for i in "${!v1_parts[@]}"; do
                 if [[ "${v1_parts[i]}" -gt "${v2_parts[i]}" ]]; then
                   echo "Studio released Package version ($package_version) is greater than commit message version from drawing production repo ($version_string). You need to upgrade your package version."
@@ -65,15 +64,17 @@ jobs:
               done
               echo "The studio Package version ($package_version) is the same as commit version in Drawing production repo ($version_string)."
               echo "$line" | grep -oP '^\w+' > commit_hash.txt
-              break
+              same_version_found=true
             }
-      
-            compare_versions "$package_version" "$version_string"
-          done < ./test/filtered_commits.txt
-      
 
-    - name: cd to test and create pr from commit hash
-      run: |
+            compare_versions "$package_version" "$version_string"
+              if [ "$same_version_found" = true ]; then
+            break
+                fi
+          done < ./test/filtered_commits.txt
+
+      - name: cd to test and create pr from commit hash
+        run: |
           cd test
           cat ../commit_hash.txt
           git checkout $(cat commit_hash.txt)
@@ -81,7 +82,5 @@ jobs:
           git push origin test-branch
           gh pr create --title "Test PR" --body "Test PR" --base main --head test-branch
 
-      env:
-        GITHUB_TOKEN: ${{ secrets.TOKEN_3 }}
-
-        
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN_3 }}
