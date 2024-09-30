@@ -78,7 +78,7 @@ jobs:
           echo "creating a PR from the commit hash"
           cd test
           commit_hash=$(cat ../commit_hash.txt)
-          commit_message=$(grep -w "^$commit_hash" filtered_commits.txt | cut -d' ' -f2-)
+          commit_message=$(grep -w "^$commit_hash" filtered_commits.txt | cut -d' ' -f2- | tr ' ' '_')
           echo "Commit message: $commit_message"
           cat ../commit_hash.txt
           git checkout $(cat ../commit_hash.txt)
