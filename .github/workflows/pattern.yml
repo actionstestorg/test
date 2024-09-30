@@ -75,12 +75,20 @@ jobs:
 
       - name: cd to test and create pr from commit hash
         run: |
+          echo "creating a PR from the commit hash"
           cd test
           cat ../commit_hash.txt
           git checkout $(cat commit_hash.txt)
           git checkout -b test-branch
           git push origin test-branch
-          gh pr create --title "Test PR" --body "Test PR" --base main --head test-branch
+          gh_pr_create_output=$(gh pr create --title "Test PR" --body "Test PR" --base main --head test-branch 2>&1)
+          echo "$gh_pr_create_output"
+          
+          if echo "$gh_pr_create_output" | grep -q "https://github.com/"; then
+            echo "PR is created successfully."
+          else
+            echo "Failed to create PR."
+          fi
 
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN_3 }}
