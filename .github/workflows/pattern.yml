@@ -79,6 +79,7 @@ jobs:
           cd test
           commit_hash=$(cat ../commit_hash.txt)
           commit_message=$(grep -w "^$commit_hash" cm.txt | cut -d' ' -f2-)
+          echo "Commit message: $commit_message"
           cat ../commit_hash.txt
           git checkout $(cat ../commit_hash.txt)
           git checkout -b $commit_message
