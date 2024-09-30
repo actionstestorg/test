@@ -1,4 +1,4 @@
-name: Filter Commits
+name: Check studio package version and create PR from commit hash
 
 on:
   workflow_dispatch:
