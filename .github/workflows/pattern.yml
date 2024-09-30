@@ -65,7 +65,7 @@ jobs:
               done
               echo "The studio Package version ($package_version) is the same as commit version in Drawing production repo ($version_string)."
               echo "$line" | grep -oP '^\w+' > commit_hash.txt
-              return
+              break
             }
       
             compare_versions "$package_version" "$version_string"
