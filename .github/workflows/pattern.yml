@@ -78,7 +78,7 @@ jobs:
           echo "creating a PR from the commit hash"
           cd test
           cat ../commit_hash.txt
-          git checkout $(cat commit_hash.txt)
+          git checkout $(cat ../commit_hash.txt)
           git checkout -b test-branch
           git push origin test-branch
           gh_pr_create_output=$(gh pr create --title "Test PR" --body "Test PR" --base main --head test-branch 2>&1)
