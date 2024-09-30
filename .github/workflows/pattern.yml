@@ -26,16 +26,9 @@ jobs:
         git fetch --unshallow
         git log --oneline
         git log --pretty=format:"%H %s" | grep -E "[0-9]+\.[0-9]+\.[0-9]+" > filtered_commits.txt
-        echo "Filtered commits:"
+        echo "commits with the version numbers in drawing production repo:"
         cat filtered_commits.txt
         cd ..
-
-    # - name: Checkout another repository
-    #   uses: actions/checkout@v2
-    #   with:
-    #     repository: actionstestorg/test2
-    #     token: ${{ secrets.TOKEN_3 }}
-    #     path: test2
 
     - name: Set up Node.js
       uses: actions/setup-node@v3
@@ -44,45 +37,40 @@ jobs:
     
     - name: Compare versions
       run: |
-        ls -a
-        if [ -f package.json ]; then
-          echo "package.json exists."
-          package_version=$(jq -r '.version' package.json)
-          echo "Package version: $package_version"
-        else
-          echo "package.json does not exist."
-          exit 1
-        fi
-
-        while IFS= read -r line; do
-          version_string=$(echo "$line" | grep -oP '\d+\.\d+\.\d+')
-          
-          echo "Commit message version: $version_string"
-          
-          compare_versions() {
-            IFS='.' read -r -a v1_parts <<< "$1"
-            IFS='.' read -r -a v2_parts <<< "$2"
-
-            
-            for i in "${!v1_parts[@]}"; do
-              git remote -v
-              if [[ "${v1_parts[i]}" -gt "${v2_parts[i]}" ]]; then
-                echo "Package version ($package_version) is greater than commit version ($version_string)."
-                return
-              elif [[ "${v1_parts[i]}" -lt "${v2_parts[i]}" ]]; then
-                echo "Package version ($package_version) is lesser than commit version ($version_string)."
-                return
-              fi
-            done
-            echo "Package version ($package_version) is the same as commit version ($version_string)."
-            echo "$line" | grep -oP '^\w+' > commit_hash.txt
-            
-
-
-          }
-          
-          compare_versions "$package_version" "$version_string"
-        done < ./test/filtered_commits.txt
+          if [ -f package.json ]; then
+            echo "package.json exists."
+            package_version=$(jq -r '.version' package.json)
+            echo "Studio packages/framework Package version: $package_version"
+          else
+            echo "package.json does not exist in the studio repo."
+            exit 1
+          fi
+      
+          while IFS= read -r line; do
+            version_string=$(echo "$line" | grep -oP '\d+\.\d+\.\d+')
+            echo "Drawing production Commit message version: $version_string"
+      
+            compare_versions() {
+              IFS='.' read -r -a v1_parts <<< "$1"
+              IFS='.' read -r -a v2_parts <<< "$2"
+      
+              for i in "${!v1_parts[@]}"; do
+                if [[ "${v1_parts[i]}" -gt "${v2_parts[i]}" ]]; then
+                  echo "Studio released Package version ($package_version) is greater than commit message version from drawing production repo ($version_string). You need to upgrade your package version."
+                  exit 1
+                elif [[ "${v1_parts[i]}" -lt "${v2_parts[i]}" ]]; then
+                  echo "The Studio Package version ($package_version) is lesser than commit version from drawing production repo ($version_string)."
+                  return
+                fi
+              done
+              echo "The studio Package version ($package_version) is the same as commit version in Drawing production repo ($version_string)."
+              echo "$line" | grep -oP '^\w+' > commit_hash.txt
+              return
+            }
+      
+            compare_versions "$package_version" "$version_string"
+          done < ./test/filtered_commits.txt
+      
 
     - name: cd to test and create pr from commit hash
       run: |
