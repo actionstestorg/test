@@ -20,82 +20,129 @@ jobs:
         with:
           path: test
 
-          
-      - name: Filter commits
-        run: |
-          cd test
-          git fetch --unshallow
-          git log --oneline
-          git log --pretty=format:"%H %s" | grep -E "[0-9]+\.[0-9]+\.[0-9]+" > filtered_commits.txt
-          echo "commits with the version numbers in drawing production repo:"
-          cat filtered_commits.txt
-          cd ..
+
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v2
         with:
-          node-version: "16"
+          node-version: '14'
 
-      - name: Compare versions
+      - name: Get all commits with change files
+        id: get_commits
         run: |
-          if [ -f package.json ]; then
-            echo "package.json exists."
-            package_version=$(jq -r '.version' package.json)
-            echo "Studio packages/framework Package version: $package_version"
-          else
-            echo "package.json does not exist in the studio repo."
-            exit 1
-          fi
-
-          while IFS= read -r line; do
-            version_string=$(echo "$line" | grep -oP '\d+\.\d+\.\d+')
-            echo "Drawing production Commit message version: $version_string"
-
-            compare_versions() {
-              IFS='.' read -r -a v1_parts <<< "$1"
-              IFS='.' read -r -a v2_parts <<< "$2"
-
-              for i in "${!v1_parts[@]}"; do
-                if [[ "${v1_parts[i]}" -gt "${v2_parts[i]}" ]]; then
-                  echo "Studio released Package version ($package_version) is greater than commit message version from drawing production repo ($version_string). You need to upgrade your package version."
-                  exit 1
-                elif [[ "${v1_parts[i]}" -lt "${v2_parts[i]}" ]]; then
-                  echo "The Studio Package version ($package_version) is lesser than commit version from drawing production repo ($version_string)."
-                  return
-                fi
-              done
-              echo "The studio Package version ($package_version) is the same as commit version in Drawing production repo ($version_string)."
-              echo "$line" | grep -oP '^\w+' > commit_hash.txt
-              same_version_found=true
-            }
-
-            compare_versions "$package_version" "$version_string"
-              if [ "$same_version_found" = true ]; then
-            break
-                fi
-          done < ./test/filtered_commits.txt
-
-      - name: cd to test and create pr from commit hash
-        run: |
-          echo "creating a PR from the commit hash"
           cd test
-          commit_hash=$(cat ../commit_hash.txt)
-          commit_message=$(grep -w "^$commit_hash" filtered_commits.txt | cut -d' ' -f2- | tr ' ' '_')
-          echo "Commit message: $commit_message"
-          cat ../commit_hash.txt
-          git checkout $(cat ../commit_hash.txt)
-          git checkout -b $commit_message
-          git push origin $commit_message
+          commits=$(git log --pretty=format:"%H" --name-only | grep -B 1 "change/")
+          echo "::set-output name=commits::$commits"
 
-          gh_pr_create_output=$(gh pr create --title $commit_message --body "Test PR" --base test --head $commit_message 2>&1)
+      - name: Check change files for version
+        id: check_versions
+        run: |
+          current_version=$(cat ../package.json | jq -r '.version')
+          for commit in ${{ steps.get_commits.outputs.commits }}; do
+            change_files=$(git show $commit --name-only | grep "change/")
+            for file in $change_files; do
+              version=$(cat $file | jq -r '.version')
+              if [ -n "$version" ]; then
+                if [ "$version" \> "$current_version" ]; then
+                  echo "Version $version is greater than current version $current_version. Continuing to next commit."
+                  continue
+                elif [ "$version" \< "$current_version" ]; then
+                  echo "Version $version is less than current version $current_version. Exiting with issue."
+                  exit 1
+                else
+                  echo "Creating PR for commit $commit with version $version."
+                  # Add your PR creation logic here
+                fi
+              fi
+            done
+          done
 
-          echo "$gh_pr_create_output"
+      - name: Create Pull Request
+        if: success()
+        run: |
+          # Add your PR creation logic here
+          echo "PR created successfully."
+
+
           
-          if echo "$gh_pr_create_output" | grep -q "https://github.com/"; then
-            echo "PR is created successfully."
-          else
-            echo "Failed to create PR."
-          fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN_3 }}
+      # - name: Filter commits
+      #   run: |
+      #     cd test
+      #     git fetch --unshallow
+      #     git log --oneline
+      #     git log --pretty=format:"%H %s" | grep -E "[0-9]+\.[0-9]+\.[0-9]+" > filtered_commits.txt
+      #     echo "commits with the version numbers in drawing production repo:"
+      #     cat filtered_commits.txt
+      #     cd ..
+
+      # - name: Set up Node.js
+      #   uses: actions/setup-node@v3
+      #   with:
+      #     node-version: "16"
+
+      # - name: Compare versions
+      #   run: |
+      #     if [ -f package.json ]; then
+      #       echo "package.json exists."
+      #       package_version=$(jq -r '.version' package.json)
+      #       echo "Studio packages/framework Package version: $package_version"
+      #     else
+      #       echo "package.json does not exist in the studio repo."
+      #       exit 1
+      #     fi
+
+      #     while IFS= read -r line; do
+      #       version_string=$(echo "$line" | grep -oP '\d+\.\d+\.\d+')
+      #       echo "Drawing production Commit message version: $version_string"
+
+      #       compare_versions() {
+      #         IFS='.' read -r -a v1_parts <<< "$1"
+      #         IFS='.' read -r -a v2_parts <<< "$2"
+
+      #         for i in "${!v1_parts[@]}"; do
+      #           if [[ "${v1_parts[i]}" -gt "${v2_parts[i]}" ]]; then
+      #             echo "Studio released Package version ($package_version) is greater than commit message version from drawing production repo ($version_string). You need to upgrade your package version."
+      #             exit 1
+      #           elif [[ "${v1_parts[i]}" -lt "${v2_parts[i]}" ]]; then
+      #             echo "The Studio Package version ($package_version) is lesser than commit version from drawing production repo ($version_string)."
+      #             return
+      #           fi
+      #         done
+      #         echo "The studio Package version ($package_version) is the same as commit version in Drawing production repo ($version_string)."
+      #         echo "$line" | grep -oP '^\w+' > commit_hash.txt
+      #         same_version_found=true
+      #       }
+
+      #       compare_versions "$package_version" "$version_string"
+      #         if [ "$same_version_found" = true ]; then
+      #       break
+      #           fi
+      #     done < ./test/filtered_commits.txt
+
+      # - name: cd to test and create pr from commit hash
+      #   run: |
+      #     echo "creating a PR from the commit hash"
+      #     cd test
+      #     commit_hash=$(cat ../commit_hash.txt)
+      #     commit_message=$(grep -w "^$commit_hash" filtered_commits.txt | cut -d' ' -f2- | tr ' ' '_')
+      #     echo "Commit message: $commit_message"
+      #     cat ../commit_hash.txt
+      #     git checkout $(cat ../commit_hash.txt)
+      #     git checkout -b $commit_message
+      #     git push origin $commit_message
+
+      #     gh_pr_create_output=$(gh pr create --title $commit_message --body "Test PR" --base test --head $commit_message 2>&1)
+
+      #     echo "$gh_pr_create_output"
+          
+      #     if echo "$gh_pr_create_output" | grep -q "https://github.com/"; then
+      #       echo "PR is created successfully."
+      #     else
+      #       echo "Failed to create PR."
+      #     fi
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.TOKEN_3 }}
 
