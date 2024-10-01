@@ -1,6 +1,6 @@
 {
   "type": "patch",
-  "comment": "Change files",
+  "comment": "Merge branch 'new_pat' of https://github.com/actionstestorg/test into new_pat",
   "packageName": "test-repo-2",
   "email": "Saurabh.Talele@bentley.com",
   "dependentChangeType": "patch"
