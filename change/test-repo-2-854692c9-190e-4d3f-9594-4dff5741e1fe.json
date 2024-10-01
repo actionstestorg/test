@@ -1,4 +1,5 @@
 {
+  "comment": "Change files",
   "type": "patch",
   "packageName": "test-repo-2",
   "email": "Saurabh.Talele@bentley.com",
