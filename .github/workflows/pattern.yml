@@ -38,9 +38,10 @@ jobs:
           ls -l
           current_version=$(cat package.json | jq -r '.version')
           cd test
+          echo ${{steps.get_commits.outputs.commits}}
           for commit in ${{ steps.get_commits.outputs.commits }}; do
             change_files=$(git show --name-only $commit | grep "change/")
-            echo $change_files
+            
             for file in $change_files; do
               version=$(cat $file | jq -r '.version')
               if [ -n "$version" ]; then
