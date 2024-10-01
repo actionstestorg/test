@@ -1,8 +1,8 @@
 {
-  "comment": "Change files",
-  "type": "minor",
+  "comment": "test change log",
+  "type": "patch",
   "versionUpgrade": "yes",
-  "version": "1.0.86",
+  "version": "1.0.25",
   "packageName": "test-repo-2",
   "email": "Saurabh.Talele@bentley.com",
   "dependentChangeType": "patch"
