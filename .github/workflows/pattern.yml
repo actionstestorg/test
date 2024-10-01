@@ -40,6 +40,7 @@ jobs:
           cd test
           for commit in ${{ steps.get_commits.outputs.commits }}; do
             change_files=$(git show --name-only $commit | grep "change/")
+            echo $change_files
             for file in $change_files; do
               version=$(cat $file | jq -r '.version')
               if [ -n "$version" ]; then
