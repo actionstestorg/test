@@ -30,6 +30,7 @@ jobs:
         run: |
           cd test
           commits=$(git log --pretty=format:"%H" --name-only | grep -B 1 "change/")
+          echo $commits
           echo "::set-output name=commits::$commits"
 
       - name: Check change files for version
