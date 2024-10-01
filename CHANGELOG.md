@@ -1,0 +1,141 @@
+# Change Log - test-repo-2
+
+<!-- This log was last generated on Tue, 01 Oct 2024 06:50:25 GMT and should not be manually modified. -->
+
+<!-- Start content -->
+
+## 2.2.1
+
+Tue, 01 Oct 2024 06:50:25 GMT
+
+### Patches
+
+- test change log (Saurabh.Talele@bentley.com)
+
+## 2.2.0
+
+Tue, 01 Oct 2024 06:24:53 GMT
+
+### Minor changes
+
+- Change files (Saurabh.Talele@bentley.com)
+
+## 2.1.3
+
+Tue, 01 Oct 2024 06:21:47 GMT
+
+### Patches
+
+- Change files (Saurabh.Talele@bentley.com)
+
+## 2.1.2
+
+Tue, 01 Oct 2024 06:03:54 GMT
+
+### Patches
+
+- Change files (Saurabh.Talele@bentley.com)
+
+## 2.1.1
+
+Tue, 01 Oct 2024 06:03:21 GMT
+
+### Patches
+
+- undefined (Saurabh.Talele@bentley.com)
+
+## 2.1.0
+
+Tue, 01 Oct 2024 05:49:18 GMT
+
+### Minor changes
+
+- undefined (Saurabh.Talele@bentley.com)
+
+## 2.0.5
+
+Tue, 01 Oct 2024 05:42:27 GMT
+
+### Patches
+
+- undefined (Saurabh.Talele@bentley.com)
+
+## 2.0.4
+
+Tue, 01 Oct 2024 05:41:11 GMT
+
+### Patches
+
+- undefined (Saurabh.Talele@bentley.com)
+
+## 2.0.3
+
+Tue, 01 Oct 2024 05:26:12 GMT
+
+### Patches
+
+- Merge branch 'new_pat' of https://github.com/actionstestorg/test into new_pat (Saurabh.Talele@bentley.com)
+
+## 2.0.2
+
+Tue, 01 Oct 2024 05:25:55 GMT
+
+### Patches
+
+- Change files (Saurabh.Talele@bentley.com)
+
+## 2.0.1
+
+Tue, 01 Oct 2024 05:23:45 GMT
+
+### Patches
+
+- update main (Saurabh.Talele@bentley.com)
+
+## 2.0.0
+
+Tue, 01 Oct 2024 04:58:53 GMT
+
+### Major changes
+
+- Change files (Saurabh.Talele@bentley.com)
+
+## 1.2.0
+
+Tue, 01 Oct 2024 04:49:41 GMT
+
+### Minor changes
+
+- Change files (Saurabh.Talele@bentley.com)
+
+## 1.1.1
+
+Tue, 01 Oct 2024 04:47:34 GMT
+
+### Patches
+
+- Change files (Saurabh.Talele@bentley.com)
+
+## 1.1.0
+
+Tue, 01 Oct 2024 03:09:54 GMT
+
+### Minor changes
+
+- update version to 1.0.79 (Saurabh.Talele@bentley.com)
+
+## 1.0.80
+
+Tue, 01 Oct 2024 03:08:45 GMT
+
+### Patches
+
+- change (Saurabh.Talele@bentley.com)
+
+## 1.0.79
+
+Tue, 01 Oct 2024 02:41:08 GMT
+
+### Patches
+
+- update version to 1.0.79 (Saurabh.Talele@bentley.com)

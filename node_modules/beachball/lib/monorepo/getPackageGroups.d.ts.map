@@ -1,0 +1,1 @@
+{"version":3,"file":"getPackageGroups.d.ts","sourceRoot":"","sources":["../../src/monorepo/getPackageGroups.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,mBAAmB,EAAE,MAAM,2BAA2B,CAAC;AAEhE,OAAO,EAAE,YAAY,EAAE,aAAa,EAAE,MAAM,sBAAsB,CAAC;AAGnE,wBAAgB,gBAAgB,CAC9B,YAAY,EAAE,YAAY,EAC1B,IAAI,EAAE,MAAM,EACZ,MAAM,EAAE,mBAAmB,EAAE,GAAG,SAAS,GACxC,aAAa,CA6Cf"}

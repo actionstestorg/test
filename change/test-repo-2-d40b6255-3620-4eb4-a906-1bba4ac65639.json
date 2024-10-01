@@ -1,0 +1,9 @@
+{
+  "comment": "test change",
+  "type": "patch",
+  "versionUpgrade": "yes",
+  "version": "1.0.25",
+  "packageName": "test-repo-2",
+  "email": "Saurabh.Talele@bentley.com",
+  "dependentChangeType": "patch"
+}
