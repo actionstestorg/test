@@ -29,7 +29,7 @@ jobs:
         id: get_commits
         run: |
           cd test
-          commits=$(git log --pretty=format:"%H" --name-only | grep -B 1 "change/")
+          commits=$(git log --pretty=format:"%H" --name-only | awk '/^change\//{print prev "\n" $0}{prev=$0}')
           echo "The commit are"
           echo $commits
           echo "::set-output name=commits::$commits"
