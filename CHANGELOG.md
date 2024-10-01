@@ -1,8 +1,18 @@
 # Change Log - test-repo-2
 
-<!-- This log was last generated on Tue, 01 Oct 2024 06:50:25 GMT and should not be manually modified. -->
+<!-- This log was last generated on Tue, 01 Oct 2024 13:04:10 GMT and should not be manually modified. -->
 
 <!-- Start content -->
+
+## 2.2.2
+
+Tue, 01 Oct 2024 13:04:10 GMT
+
+### Patches
+
+- Merge branch 'test' of https://github.com/actionstestorg/test into test (Saurabh.Talele@bentley.com)
+- Merge branch 'test' of https://github.com/actionstestorg/test into test (Saurabh.Talele@bentley.com)
+- test change (Saurabh.Talele@bentley.com)
 
 ## 2.2.1
 
