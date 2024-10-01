@@ -58,9 +58,14 @@ jobs:
                 else
                   echo "Creating PR for commit $commit with version $version."
                   # Add your PR creation logic here
+                  status="success"
+                  break
                 fi
               fi
             done
+            if [ "$status" = "success" ]; then
+              break
+            fi
           done
 
       - name: Create Pull Request
