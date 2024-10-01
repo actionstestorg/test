@@ -1,11 +1,20 @@
 {
   "name": "test-repo-2",
-  "version": "1.0.78",
+  "version": "2.2.1",
   "main": "index.js",
+  "repository": {
+    "url": "https://github.com/actionstestorg/test.git"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "change": "beachball change",
+    "bump": "beachball bump"
   },
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "beachball": "^2.47.1",
+    "prompts": "^2.4.2"
+  }
 }
