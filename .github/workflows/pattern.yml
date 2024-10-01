@@ -29,6 +29,7 @@ jobs:
         id: get_commits
         run: |
           cd test
+          git fetch --unshallow
           commits=$(git log --oneline -- change/)
           echo "The commit are"
           echo $commits
