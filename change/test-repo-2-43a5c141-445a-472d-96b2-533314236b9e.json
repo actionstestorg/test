@@ -1,8 +1,0 @@
-{
-  "comment": "Merge branch 'test' of https://github.com/actionstestorg/test into test",
-  "type": "patch",
-  "versionUpgrade": "no",
-  "packageName": "test-repo-2",
-  "email": "Saurabh.Talele@bentley.com",
-  "dependentChangeType": "patch"
-}
