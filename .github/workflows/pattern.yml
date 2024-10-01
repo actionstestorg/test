@@ -43,6 +43,7 @@ jobs:
           cd test
           echo ${{steps.get_commits.outputs.commits}}
           for commit in ${{ steps.get_commits.outputs.commits }}; do
+            git checkout $commit
             change_files=$(git show --name-only $commit | grep "change/")
             
             for file in $change_files; do
