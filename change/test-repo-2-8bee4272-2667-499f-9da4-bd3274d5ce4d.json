@@ -1,6 +1,6 @@
 {
-  "type": "minor",
-  "comment": "update version to 1.0.79",
+  "type": "patch",
+  "comment": "Change files",
   "packageName": "test-repo-2",
   "email": "Saurabh.Talele@bentley.com",
   "dependentChangeType": "patch"
