@@ -1,6 +1,6 @@
 {
-  "description": "what is the description",
-  "type": "patch",
+  "description": "test",
+  "type": "minor",
   "packageName": "test-repo-2",
   "email": "Saurabh.Talele@bentley.com",
   "dependentChangeType": "patch"
