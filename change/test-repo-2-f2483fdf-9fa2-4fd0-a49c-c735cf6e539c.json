@@ -1,4 +1,5 @@
 {
+  "description": "what is the description",
   "type": "patch",
   "packageName": "test-repo-2",
   "email": "Saurabh.Talele@bentley.com",
