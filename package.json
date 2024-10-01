@@ -1,11 +1,15 @@
 {
   "name": "test-repo-2",
-  "version": "1.0.78",
+  "version": "1.0.79",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "beachball change"
   },
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "beachball": "^2.47.1"
+  }
 }

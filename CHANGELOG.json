@@ -1,0 +1,20 @@
+{
+  "name": "test-repo-2",
+  "entries": [
+    {
+      "date": "Tue, 01 Oct 2024 02:41:08 GMT",
+      "version": "1.0.79",
+      "tag": "test-repo-2_v1.0.79",
+      "comments": {
+        "patch": [
+          {
+            "author": "Saurabh.Talele@bentley.com",
+            "package": "test-repo-2",
+            "commit": "14b0c5ce9d80db64eb020ea139c9eb2bb4a5b1cb",
+            "comment": "update version to 1.0.79"
+          }
+        ]
+      }
+    }
+  ]
+}
