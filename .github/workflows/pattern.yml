@@ -20,15 +20,10 @@ jobs:
         with:
           path: test
 
-
-
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: '16'
 
       - name: Get all commits with change files
         id: get_commits
