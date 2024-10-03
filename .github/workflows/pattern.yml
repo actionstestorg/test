@@ -74,7 +74,7 @@ jobs:
       - name: Create Pull Request
         if: success()
         run: |
-          commit_message = $(cat commit_message.txt)
+          commit_message=$(cat commit_message.txt)
           git checkout -b $commit_message
           git push origin $commit_message
 
