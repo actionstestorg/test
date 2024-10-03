@@ -82,7 +82,7 @@ jobs:
           commit_message=$(cat commit_message.txt)
           branch_name=$(echo $commit_message | tr ' ' '_')
           git checkout -b $branch_name  
-          git push -u origin $branch_name
+          git push -u -f origin $branch_name
           echo "::set-output name=branch_name::$branch_name"
           - name: Fetch all branches
           run: git fetch --all
