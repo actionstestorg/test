@@ -79,13 +79,24 @@ jobs:
           cd test
           git branch
           git remote -v
-
+          git config --global user.name "Saurabh Talele"
+          git config --global user.email "Saurabh.Talele@bentley.com"
           commit_message=$(cat commit_message.txt)
           branch_name=$(echo $commit_message | tr ' ' '_')
           git checkout -b $branch_name  
           git push -u origin $branch_name
           echo "::set-output name=branch_name::$branch_name"
-      
+          - name: Fetch all branches
+          run: git fetch --all
+        
+      - name: Check for differences
+        run: |
+            git diff origin/test...HEAD
+            if [ $? -ne 0 ]; then
+              echo "No differences found"
+              exit 1
+            fi
+        
       - name: Create pull request
         id: create_pr
         uses: repo-sync/pull-request@v2
