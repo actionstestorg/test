@@ -60,7 +60,7 @@ jobs:
                   exit 1
                 else
                   echo "Creating PR for commit $commit with version $version."
-                  echo (git log -1 --pretty=format:"%s" $commit) > commit_message.txt
+                  echo $(git log -1 --pretty=format:"%s" $commit) > commit_message.txt
                   status="success"
                   break
                 fi
