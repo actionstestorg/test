@@ -73,6 +73,7 @@ jobs:
           done < ${{ steps.get_commits.outputs.commits_file }}
 
       - name: Create Pull Request
+        id: create_branch
         if: success()
         run: |
           cd test
@@ -82,18 +83,30 @@ jobs:
           commit_message=$(cat commit_message.txt)
           branch_name=$(echo $commit_message | tr ' ' '_')
           git checkout -b $branch_name  
-          git push origin $branch_name
-          gh_pr_create_output=$(gh pr create --title $commit_message --body "Test PR" --base test --head $commit_message 2>&1)
+          git push -u origin $branch_name
+          echo "::set-output name=branch_name::$branch_name"
+      
+      - name: Create pull request
+        id: create_pr
+        uses: repo-sync/pull-request@v2
+        with:
+            source_branch: ${{steps.create_branch.outputs.branch_name}}
+            destination_branch: main
+            pr_label: "release-test-app"
+            github_token: ${{ secrets.TOKEN_3 }}
+            pr_title: "PR ${{env.PUBLISH_NAME}}"
+            pr_reviewer: ashish-srivastava-dev,Ellord207,williamkbentley
+        #   gh_pr_create_output=$(gh pr create --title $commit_message --body "Test PR" --base test --head $commit_message 2>&1)
 
-          echo "$gh_pr_create_output"
+        #   echo "$gh_pr_create_output"
           
-          if echo "$gh_pr_create_output" | grep -q "https://github.com/"; then
-            echo "PR is created successfully."
-          else
-            echo "Failed to create PR."
-          fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN_3 }}
+        #   if echo "$gh_pr_create_output" | grep -q "https://github.com/"; then
+        #     echo "PR is created successfully."
+        #   else
+        #     echo "Failed to create PR."
+        #   fi
+        # env:
+        #   GITHUB_TOKEN: ${{ secrets.TOKEN_3 }}
 
 
           
