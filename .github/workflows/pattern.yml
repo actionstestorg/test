@@ -109,7 +109,7 @@ jobs:
           branch_name=$(git branch --show-current)
           echo "Pushing branch $branch_name"
           git branch
-          git push -u -f origin $(git branch --show-current)
+          git push -u -f origin HEAD:dev
           echo "::set-output name=branch_name::$branch_name"
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN_3 }}
