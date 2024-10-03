@@ -79,8 +79,6 @@ jobs:
           cd test
           git branch
           git remote -v
-          git config --global user.name "Saurabh Talele"
-          git config --global user.email "Saurabh.Talele@bentley.com"
           commit_message=$(cat commit_message.txt)
           branch_name=$(echo $commit_message | tr ' ' '_')
           git checkout -b $branch_name  
@@ -106,7 +104,6 @@ jobs:
             pr_label: "release-test-app"
             github_token: ${{ secrets.TOKEN_3 }}
             pr_title: "PR ${{env.PUBLISH_NAME}}"
-            pr_reviewer: ashish-srivastava-dev,Ellord207,williamkbentley
         #   gh_pr_create_output=$(gh pr create --title $commit_message --body "Test PR" --base test --head $commit_message 2>&1)
 
         #   echo "$gh_pr_create_output"
