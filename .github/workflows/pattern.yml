@@ -84,19 +84,19 @@ jobs:
         with:
             ref: ${{ steps.read_commit_id.outputs.commit_id }}
 
-      - name: Create new branch Request
-        id: create_branch
-        if: success()
-        run: |
-          cd test
-          git branch
-          git remote -v
-          commit_message=$(cat commit_message.txt)
-          commit_id=$(cat commit_id.txt)
-          branch_name=$(echo $commit_message | tr ' ' '_')
-          echo $commit_id
-          git checkout -b $branch_name  $commit_id
-          git push -u -f origin $branch_name 
+      # - name: Create new branch Request
+      #   id: create_branch
+      #   if: success()
+      #   run: |
+      #     cd test
+      #     git branch
+      #     git remote -v
+      #     commit_message=$(cat commit_message.txt)
+      #     commit_id=$(cat commit_id.txt)
+      #     branch_name=$(echo $commit_message | tr ' ' '_')
+      #     echo $commit_id
+      #     git checkout -b $branch_name  $commit_id
+      #     git push -u -f origin $branch_name 
 
       - name: Push new branch
         id: push_branch
@@ -104,9 +104,8 @@ jobs:
         run: |
           branch_name=$(git branch --show-current)
           echo "Pushing branch $branch_name"
-          git add .
-          giot commit -m "update package version"
-          git push -u -f origin $branch_name 
+          git checkout -b branch_name
+          git push -u -f origin branch_name 
           echo "::set-output name=branch_name::$branch_name"
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN_3 }}
