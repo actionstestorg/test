@@ -83,11 +83,10 @@ jobs:
           commit_message=$(cat commit_message.txt)
           commit_id=$(cat commit_id.txt)
           branch_name=$(echo $commit_message | tr ' ' '_')
+          echo $commit_id
           git checkout -b $branch_name  $commit_id
           git push -u -f origin $branch_name 
           echo "::set-output name=branch_name::$branch_name"
-          - name: Fetch all branches
-          run: git fetch --all
         
       - name: Check for differences
         run: |
