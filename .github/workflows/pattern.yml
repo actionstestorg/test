@@ -72,11 +72,17 @@ jobs:
               break
             fi
           done < ${{ steps.get_commits.outputs.commits_file }}
+      
+      - name: Read commit ID
+        id: read_commit_id
+        run: |
+            commit_id=$(cat commit_id.txt)
+            echo "::set-output name=commit_id::$commit_id"
 
       - name: checkout to commit
         uses: actions/checkout@v2
         with:
-            ref: $(cat commit_id.txt)
+            ref: ${{ steps.read_commit_id.outputs.commit_id }}
 
       - name: Create new branch Request
         id: create_branch
