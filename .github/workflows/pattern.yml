@@ -109,6 +109,7 @@ jobs:
           branch_name=$(git branch --show-current)
           echo "Pushing branch $branch_name"
           git branch
+          git checkout -b $branch_name
           git push -u -f origin $branch_name
           echo "::set-output name=branch_name::$branch_name"
         env:
