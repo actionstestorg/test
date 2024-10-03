@@ -75,6 +75,7 @@ jobs:
         if: success()
         run: |
           cd test
+          git remote -v
           commit_message=$(cat commit_message.txt)
           branch_name=$(echo $commit_message | tr ' ' '_')
           git checkout -b $branch_name  
