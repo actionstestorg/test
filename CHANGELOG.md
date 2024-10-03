@@ -1,8 +1,16 @@
 # Change Log - test-repo-2
 
-<!-- This log was last generated on Thu, 03 Oct 2024 06:39:57 GMT and should not be manually modified. -->
+<!-- This log was last generated on Thu, 03 Oct 2024 09:58:08 GMT and should not be manually modified. -->
 
 <!-- Start content -->
+
+## 2.2.6
+
+Thu, 03 Oct 2024 09:58:08 GMT
+
+### Patches
+
+- upgrade version  (Saurabh.Talele@bentley.com)
 
 ## 2.2.5
 
