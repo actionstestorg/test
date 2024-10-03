@@ -76,8 +76,9 @@ jobs:
         run: |
           ls -l
           commit_message=$(cat test/commit_message.txt)
-          git checkout -b $commit_message
-          git push origin $commit_message
+          branch_name=$(echo $commit_message | tr ' ' '_')
+          git checkout -b $branch_name  
+          git push origin $branch_name
 
           gh_pr_create_output=$(gh pr create --title $commit_message --body "Test PR" --base test --head $commit_message 2>&1)
 
