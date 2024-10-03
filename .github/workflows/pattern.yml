@@ -33,7 +33,7 @@ jobs:
           commits=$(git log --pretty=format:"%H" -- change/)
           echo "The commit are"
           echo $commits
-          echo "::set-output name=commits::$commits"
+          echo "::set-output name=commits::$(echo $commits | tr ' ' '\n')"
 
       - name: Check change files for version
         id: check_versions
@@ -41,8 +41,9 @@ jobs:
           ls -l
           current_version=$(cat package.json | jq -r '.version')
           cd test
-          echo ${{steps.get_commits.outputs.commits}}
-          for commit in ${{ steps.get_commits.outputs.commits }}; do
+          echo "${{ steps.get_commits.outputs.commits }}"
+          IFS=$'\n' read -rd '' -a commit_array <<< "${{ steps.get_commits.outputs.commits }}"
+          for commit in "${commit_array[@]}"; do
             git checkout $commit
             change_files=$(git show --name-only $commit | grep "change/")
             
