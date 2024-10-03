@@ -1,9 +1,0 @@
-{
-  "comment": "1.0.56",
-  "type": "patch",
-  "versionUpgrade": "yes",
-  "version": "1.0.56",
-  "packageName": "test-repo-2",
-  "email": "Saurabh.Talele@bentley.com",
-  "dependentChangeType": "patch"
-}

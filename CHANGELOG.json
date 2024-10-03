@@ -2,6 +2,40 @@
   "name": "test-repo-2",
   "entries": [
     {
+      "date": "Thu, 03 Oct 2024 10:48:34 GMT",
+      "version": "2.2.9",
+      "tag": "test-repo-2_v2.2.9",
+      "comments": {
+        "patch": [
+          {
+            "author": "Saurabh.Talele@bentley.com",
+            "package": "test-repo-2",
+            "commit": "e010ce404adce143ece25645500920e411caad2b",
+            "comment": "1.0.56",
+            "versionUpgrade": "yes",
+            "version": "1.0.56"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Thu, 03 Oct 2024 10:47:57 GMT",
+      "version": "2.2.8",
+      "tag": "test-repo-2_v2.2.8",
+      "comments": {
+        "patch": [
+          {
+            "author": "Saurabh.Talele@bentley.com",
+            "package": "test-repo-2",
+            "commit": "3619ab0ca4deb29844b8a122b5e1c3fbe01efaa9",
+            "comment": "test",
+            "versionUpgrade": "yes",
+            "version": "1.0.80"
+          }
+        ]
+      }
+    },
+    {
       "date": "Thu, 03 Oct 2024 10:38:41 GMT",
       "version": "2.2.7",
       "tag": "test-repo-2_v2.2.7",
