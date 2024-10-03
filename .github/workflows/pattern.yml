@@ -75,7 +75,7 @@ jobs:
         if: success()
         run: |
           cd test
-          commit_message=$(cat test/commit_message.txt)
+          commit_message=$(cat commit_message.txt)
           branch_name=$(echo $commit_message | tr ' ' '_')
           git checkout -b $branch_name  
           git push origin $branch_name
