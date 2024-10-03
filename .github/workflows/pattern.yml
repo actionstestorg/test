@@ -91,7 +91,7 @@ jobs:
         uses: repo-sync/pull-request@v2
         with:
             source_branch: ${{steps.create_branch.outputs.branch_name}}
-            destination_branch: test
+            destination_branch: dev
             pr_label: "release-test-app"
             github_token: ${{ secrets.TOKEN_3 }}
             pr_title: "PR ${{env.PUBLISH_NAME}}"
