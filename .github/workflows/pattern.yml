@@ -60,7 +60,7 @@ jobs:
                   exit 1
                 else
                   echo "Creating PR for commit $commit with version $version."
-                  # Add your PR creation logic here
+                  echo (git log -1 --pretty=format:"%s" $commit) > commit_message.txt
                   status="success"
                   break
                 fi
@@ -74,8 +74,21 @@ jobs:
       - name: Create Pull Request
         if: success()
         run: |
-          # Add your PR creation logic here
-          echo "PR created successfully."
+          commit_message = $(cat commit_message.txt)
+          git checkout -b $commit_message
+          git push origin $commit_message
+
+          gh_pr_create_output=$(gh pr create --title $commit_message --body "Test PR" --base test --head $commit_message 2>&1)
+
+          echo "$gh_pr_create_output"
+          
+          if echo "$gh_pr_create_output" | grep -q "https://github.com/"; then
+            echo "PR is created successfully."
+          else
+            echo "Failed to create PR."
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN_3 }}
 
 
           
