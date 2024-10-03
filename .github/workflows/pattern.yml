@@ -76,6 +76,7 @@ jobs:
         if: success()
         run: |
           cd test
+          git branch
           git remote -v
 
           commit_message=$(cat commit_message.txt)
