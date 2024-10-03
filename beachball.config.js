@@ -29,7 +29,7 @@ module.exports = {
       //  check if version upgrade
       {
         type: 'select',
-        name: 'versionUpgrade',
+        name: 'isStudioVersionUpgrade',
         message: 'Does these code changes targets to upgraded studio version?',
         choices: [
           { title: 'No', value: 'no' },
@@ -40,7 +40,7 @@ module.exports = {
       //if version upgrade, ask for version
       {
         type: (prev) => (prev === 'yes' ? 'text' : null),
-        name: 'version',
+        name: 'targetStudioVersion',
         message: 'What studio version are you upgrading to?',
         initial: '1.0.0',
       },
