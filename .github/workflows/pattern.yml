@@ -6,6 +6,8 @@ on:
 jobs:
   filter-commits:
     runs-on: ubuntu-latest
+    permissions: 
+      actions: write
 
     steps:
 
