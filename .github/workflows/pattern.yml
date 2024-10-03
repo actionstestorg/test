@@ -73,6 +73,11 @@ jobs:
             fi
           done < ${{ steps.get_commits.outputs.commits_file }}
 
+      - name: checkout to commit
+        uses: actions/checkout@v2
+        with:
+            ref: $(cat commit_id.txt)
+
       - name: Create new branch Request
         id: create_branch
         if: success()
