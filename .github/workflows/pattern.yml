@@ -72,7 +72,8 @@ jobs:
               break
             fi
           done < ${{ steps.get_commits.outputs.commits_file }}
-
+          
+      - uses: actions/checkout@v2
       - name: Create new branch Request
         id: create_branch
         if: success()
