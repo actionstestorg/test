@@ -1,0 +1,26 @@
+name: Update File and Push
+
+on:
+  workflow_dispatch:
+    secrets:
+        PAT:
+            required: true
+    branches:
+      - main
+
+jobs:
+  update-file:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Commit the bumped app package.json
+      env: 
+        REPO_URL: github.com/SaurabhTalele-Bentley/test
+      run: |
+        git config --global user.email "Saurabh.Talele@bentley.com "
+        git config --global user.name "Saurabh Talele"
+        git add apps/dp-test-app/package.json
+        git commit -m "Bump app version (automated)"
+        git push "https://${{secrets.PAT}}@${{ env.REPO_URL }}"
+
+    

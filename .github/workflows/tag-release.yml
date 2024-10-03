@@ -1,0 +1,36 @@
+name: Tag Release
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  tag-release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Get commit history with 'release'
+      id: get-commits
+      run: |
+        git fetch --unshallow
+        git log --pretty=format:"%h %s" | grep -i 'release' > release_commits.txt
+        cat release_commits.txt
+        git config user.name "Saurabh Talele"
+        git config user.email "Saurabh.Talele@bentley.com"
+        while IFS= read -r line; do
+          commit_id=$(echo $line | awk '{print $1}')
+          tag_name=$(echo $line | awk '{print $2}')
+          studio_dependency=$(echo $line | awk '{print $NF}')
+          echo $NF
+          if git rev-parse "$tag_name" >/dev/null 2>&1; then
+            echo "Tag $tag_name already exists. Skipping..."
+          else
+            git tag -a "$tag_name_$studio_dependency" -m "Tagging release commit" "$commit_id"
+            git push origin "$tag_name_$studio_dependency"
+          fi
+        done < release_commits.txt

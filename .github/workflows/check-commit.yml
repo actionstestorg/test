@@ -1,0 +1,14 @@
+name: Check Commit
+
+on:
+  workflow_dispatch:
+    
+jobs:
+    check-commit:
+        runs-on: ubuntu-latest
+        steps:
+        - name: Check out code
+          uses: actions/checkout@v2
+        - name: Check commit
+          run: git log --follow change/test-repo-2-d40b6255-3620-4eb4-a906-1bba4ac65639.json
+

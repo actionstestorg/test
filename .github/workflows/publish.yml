@@ -1,0 +1,28 @@
+name: "Example workflow"
+
+on:
+  workflow_dispatch:
+
+jobs:
+  example:
+    runs-on: ubuntu-20.04
+    env:
+      GIT_APP_TOKEN: ${{ secrets.PAT }}
+      GITHUB_REPOSITORY: ${{ github.repository }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Make changes
+        run: |
+          echo "Updated content on $(date)" >> test.txt
+          git config --local user.name "Saurabh Talele"
+          git config --local user.email "Saurabh.Talele@bentley.com"
+          git add .
+          git commit -m "New change"
+
+      - name: Protected branch commit
+        uses: augustonascimentos/commit_and_push_to_protected_branch@v1
+        with:
+          token: ${{ secrets.PAT }}
+          branch: test

@@ -1,0 +1,60 @@
+name: Create Pull Request from Test Branch
+
+on:
+  workflow_dispatch:
+
+
+jobs:
+  create-pull-request:
+    runs-on: ubuntu-latest
+    environment: ActionRequired
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{github.ref_name}}
+
+      - name: Create new branch
+        run: |
+          git config --global user.name "Saurabh Talele"
+          git config --global user.email "Saurabh.Talele@bentley.com"
+          echo "Updated content on $(date)" >> test.txt
+          git add .
+          git commit -m "Automated update on $(date)"
+          git push origin ${{github.ref_name}}
+
+      - name: Create pull request
+        id: create_pr
+        uses: repo-sync/pull-request@v2
+        with:
+          source_branch: ${{github.ref_name}}
+          destination_branch: test
+          pr_label: "release"
+          github_token: ${{ secrets.PAT }}
+          pr_title: "Release PR"
+          pr_reviewer: "SaurabhTalele-Bentley"
+
+
+      - name: Approve PR
+        uses: hmarr/auto-approve-action@v4
+        with:
+            github-token: ${{ secrets.PAT2 }}
+            pull-request-number: ${{ steps.create_pr.outputs.pr_number }}
+  
+      - name: Auto merge PR
+        uses: pascalgn/automerge-action@v0.16.3
+         
+        env:
+            GITHUB_TOKEN: ${{secrets.PAT2}}
+            MERGE_COMMIT_MESSAGE: "AUTO MERGER"
+            MERGE_METHOD: merge
+            MERGE_LABELS: "release" 
+            
+            
+      - name: Log pull request number
+        run: |
+          echo "Pull Request Number: ${{ steps.create_pr.outputs.pr_number }}"

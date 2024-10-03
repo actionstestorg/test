@@ -1,0 +1,34 @@
+name: Run on PR labeled with release
+
+on:
+  pull_request_target:
+    types: [labeled]
+
+jobs:
+  run-on-release-label:
+    if: contains(github.event.pull_request.labels.*.name, 'release')
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Run a script on pr
+        run: echo "This PR is labeled with 'release'. Running the workflow..."
+      
+
+      # - name: Approve PR
+      #   uses: hmarr/auto-approve-action@v4
+      #   with:
+      #     github-token: ${{ secrets.PAT2 }}
+
+      # - name: Auto merge PR
+      #   uses: pascalgn/automerge-action@v0.16.3
+       
+      #   env:
+      #     GITHUB_TOKEN: ${{secrets.PAT2}}
+      #     MERGE_COMMIT_MESSAGE: "AUTO MERGER"
+      #     MERGE_METHOD: merge
+      #     MERGE_LABELS: "release"
