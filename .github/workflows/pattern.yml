@@ -85,6 +85,10 @@ jobs:
           branch_name=$(echo $commit_message | tr ' ' '_')
           echo $commit_id
           git checkout -b $branch_name  $commit_id
+      - name: Push new branch
+        id: push_branch
+        if: success()
+        run: |
           git push -u -f origin $branch_name 
           echo "::set-output name=branch_name::$branch_name"
         env:
