@@ -30,7 +30,7 @@ jobs:
         run: |
           cd test
           git fetch --unshallow
-          commits=$(git log --oneline -- change/)
+          commits=$(git log --pretty=format:"%H" -- change/)
           echo "The commit are"
           echo $commits
           echo "::set-output name=commits::$commits"
