@@ -89,6 +89,9 @@ jobs:
           git checkout -b $branch_name  $commit_id
           git push -u -f origin $branch_name 
           echo "::set-output name=branch_name::$branch_name"
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN_3 }}
+
         
       - name: Check for differences
         run: |
