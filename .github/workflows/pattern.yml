@@ -76,7 +76,7 @@ jobs:
       - name: Read commit ID
         id: read_commit_id
         run: |
-            commit_id=$(cat commit_id.txt)
+            commit_id=$(cat test/commit_id.txt)
             echo "::set-output name=commit_id::$commit_id"
 
       - name: checkout to commit
