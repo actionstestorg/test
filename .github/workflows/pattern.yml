@@ -89,7 +89,10 @@ jobs:
             ref: ${{ steps.read_commit_id.outputs.commit_id }}
       
       - name: Create new branch Request
-        uses: stefanzweifel/git-auto-commit-action@v5
+        run: |
+          branch_name="test-branch69"
+          git checkout -b $branch_name  
+          git push -u -f origin $branch_name
 
       # - name: Create new branch Request
       #   id: create_branch
