@@ -2,6 +2,23 @@
   "name": "test-repo-2",
   "entries": [
     {
+      "date": "Fri, 04 Oct 2024 07:26:27 GMT",
+      "version": "2.2.13",
+      "tag": "test-repo-2_v2.2.13",
+      "comments": {
+        "patch": [
+          {
+            "author": "Saurabh.Talele@bentley.com",
+            "package": "test-repo-2",
+            "commit": "f52c5b1a6b422d5d7e5cb33abfeeef0415f0fe91",
+            "comment": "bump",
+            "isStudioVersionUpgrade": "yes",
+            "targetStudioVersion": "1.0.81"
+          }
+        ]
+      }
+    },
+    {
       "date": "Fri, 04 Oct 2024 07:16:24 GMT",
       "version": "2.2.12",
       "tag": "test-repo-2_v2.2.12",

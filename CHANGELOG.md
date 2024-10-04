@@ -1,8 +1,16 @@
 # Change Log - test-repo-2
 
-<!-- This log was last generated on Fri, 04 Oct 2024 07:16:24 GMT and should not be manually modified. -->
+<!-- This log was last generated on Fri, 04 Oct 2024 07:26:27 GMT and should not be manually modified. -->
 
 <!-- Start content -->
+
+## 2.2.13
+
+Fri, 04 Oct 2024 07:26:27 GMT
+
+### Patches
+
+- bump (Saurabh.Talele@bentley.com)
 
 ## 2.2.12
 
