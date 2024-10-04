@@ -96,6 +96,8 @@ jobs:
             PR_NUMBER=$(gh pr list --state all --json number,commits --jq ".[] | select(.commits[].oid == \"$COMMIT_HASH\") | .number")
             echo "::set-output name=pr_number::$PR_NUMBER"
             echo "PR number is $PR_NUMBER"
+        env:
+            GITHUB_TOKEN: ${{ secrets.TOKEN_3 }}
 
         
         
