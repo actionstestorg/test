@@ -86,7 +86,7 @@ jobs:
       - name: checkout to commit
         uses: actions/checkout@v2
         with:
-            ref: ${{ steps.read_commit_id.outputs.commit_id }}
+            ref: dev
       
       - name: Create new branch Request
         run: |
