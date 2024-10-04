@@ -126,23 +126,16 @@ jobs:
       #     GITHUB_TOKEN: ${{ secrets.TOKEN_3 }}
 
         
-      - name: Check for differences
-        run: |
-            git diff origin/test...HEAD
-            if [ $? -ne 0 ]; then
-              echo "No differences found"
-              exit 1
-            fi
         
       - name: Create pull request
         id: create_pr
         uses: repo-sync/pull-request@v2
         with:
-            source_branch: ${{steps.create_branch.outputs.branch_name}}
+            source_branch: ${{steps.check_versions.outputs.commit_message}}
             destination_branch: main
             pr_label: "release-test-app"
             github_token: ${{ secrets.TOKEN_3 }}
-            pr_title: "PR ${{env.PUBLISH_NAME}}"
+            pr_title: "PR update for ${{steps.check_versions.outputs.commit_message}}"
         #   gh_pr_create_output=$(gh pr create --title $commit_message --body "Test PR" --base test --head $commit_message 2>&1)
 
         #   echo "$gh_pr_create_output"
