@@ -83,10 +83,10 @@ jobs:
             commit_id=$(cat test/commit_id.txt)
             echo "::set-output name=commit_id::$commit_id"
 
-      - name: checkout to commit
-        uses: actions/checkout@v2
-        with:
-            ref: ${{ steps.read_commit_id.outputs.commit_id }}
+      # - name: checkout to commit
+      #   uses: actions/checkout@v2
+      #   with:
+      #       ref: ${{ steps.read_commit_id.outputs.commit_id }}
 
       # - name: Create new branch Request
       #   id: create_branch
@@ -109,7 +109,7 @@ jobs:
           branch_name=$(git branch --show-current)
           echo "Pushing branch $branch_name"
           git branch
-          git checkout -b branch_name
+          git checkout -b branch_name ${{ steps.read_commit_id.outputs.commit_id }}
           git push -u -f origin branch_name
           echo "::set-output name=branch_name::$branch_name"
         env:
