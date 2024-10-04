@@ -86,16 +86,15 @@ jobs:
       - name: checkout to commit
         uses: actions/checkout@v2
         with:
-            ref: dev
+            ref: ${{ steps.read_commit_id.outputs.commit_id }}
+            token: ${{ secrets.TOKEN_3 }}
       
       - name: Create new branch Request
         run: |
           branch_name="test-branch69"
           git checkout -b $branch_name  
           git push -u -f origin $branch_name
-        env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN_3 }}
-
+        
       # - name: Create new branch Request
       #   id: create_branch
       #   if: success()
