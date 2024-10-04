@@ -59,7 +59,6 @@ jobs:
               if [ -n "$version" ]; then
                 if [ "$version" \> "$current_version" ]; then
                   echo "Version $version is greater than current version $current_version. Continuing to next commit."
-                  continue
                 elif [ "$version" \< "$current_version" ]; then
                   echo "Version $version is less than current version $current_version. Exiting with issue."
                   exit 1
