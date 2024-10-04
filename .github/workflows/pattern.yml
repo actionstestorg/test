@@ -108,10 +108,8 @@ jobs:
             pr_label: "merge-dev-to-main"
             github_token: ${{ secrets.TOKEN_3 }}
             pr_title: "PR for merging dev to main ${{steps.check_versions.outputs.commit_message}}"
-            pr_body: "This is an auto generated PR for merging dev to main branch
-              The commit message is ${{steps.check_versions.outputs.commit_message}}
-              The commit id is ${{steps.check_versions.outputs.commit_id}}"
-              "
+            pr_body: "This is an auto generated PR for merging dev to main branch\n The commit message is ${{steps.check_versions.outputs.commit_message}}\nThe commit id is ${{steps.check_versions.outputs.commit_id}}"
+      
         #   gh_pr_create_output=$(gh pr create --title $commit_message --body "Test PR" --base test --head $commit_message 2>&1)
 
         #   echo "$gh_pr_create_output"
