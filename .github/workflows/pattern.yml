@@ -67,6 +67,7 @@ jobs:
                   echo "Creating PR for commit $commit with version $version."
                   echo $(git log -1 --pretty=format:"%s" $commit) > commit_message.txt
                   echo $(git log -1 --pretty=format:"%H" $commit) > commit_id.txt
+                  echo "::set-output name=commit_message::$(git log -1 --pretty=format:"%s" $commit | tr ' ' '_')"
                   status="success"
                   break
                 fi
@@ -91,7 +92,7 @@ jobs:
       
       - name: Create new branch Request
         run: |
-          branch_name="test-branch69"
+          branch_name=${{ steps.check_versions.outputs.commit_message }}
           git checkout -b $branch_name  
           git push -u -f origin $branch_name
         
