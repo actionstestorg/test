@@ -1,6 +1,6 @@
 {
-  "comment": "bump",
-  "type": "patch",
+  "comment": "Merge branch 'dev' of https://github.com/actionstestorg/test into dev",
+  "type": "minor",
   "isStudioVersionUpgrade": "yes",
   "targetStudioVersion": "1.0.81",
   "packageName": "test-repo-2",
