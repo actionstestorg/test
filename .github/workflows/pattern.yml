@@ -56,7 +56,7 @@ jobs:
             
             for file in $change_files; do
               echo "Processing file: $file"
-              version=$(cat $file | jq -r '.version')
+              version=$(cat $file | jq -r '.targetStudioVersion')
               if [ -n "$version" ]; then
                 if [ "$version" \> "$current_version" ]; then
                   echo "Version $version is greater than current version $current_version. Continuing to next commit."
@@ -77,31 +77,31 @@ jobs:
             fi
           done < ${{ steps.get_commits.outputs.commits_file }}
 
-      - name: checkout to commit
+      - name: Checkout to commit having the taget studio version in drawing production repo
         uses: actions/checkout@v2
         with:
             ref: ${{ steps.check_versions.outputs.commit_id }}
             token: ${{ secrets.TOKEN_3 }}
       
-      - name: Create new branch Request
+      - name: Create new branch from the commit and push it to the drawing production repo
         run: |
           branch_name=${{ steps.check_versions.outputs.commit_message }}
           git checkout -b $branch_name  
           git push -u -f origin $branch_name
         
-      - name: Get PR number
-        id: get_pr
-        run: |
-            COMMIT_HASH=${{ steps.check_versions.outputs.commit_id }}
-            PR_NUMBER=$(gh pr list --state all --json number,commits --jq ".[] | select(.commits[].oid == \"$COMMIT_HASH\") | .number")
-            echo "::set-output name=pr_number::$PR_NUMBER"
-            echo "PR number is $PR_NUMBER"
-        env:
-            GITHUB_TOKEN: ${{ secrets.TOKEN_3 }}
+      # - name: Get PR number
+      #   id: get_pr
+      #   run: |
+      #       COMMIT_HASH=${{ steps.check_versions.outputs.commit_id }}
+      #       PR_NUMBER=$(gh pr list --state all --json number,commits --jq ".[] | select(.commits[].oid == \"$COMMIT_HASH\") | .number")
+      #       echo "::set-output name=pr_number::$PR_NUMBER"
+      #       echo "PR number is $PR_NUMBER"
+      #   env:
+      #       GITHUB_TOKEN: ${{ secrets.TOKEN_3 }}
 
         
         
-      - name: Create pull request
+      - name: Create pull request in drawing-production from dev branch to main branch
         id: create_pr
         uses: repo-sync/pull-request@v2
         with:
@@ -109,8 +109,8 @@ jobs:
             destination_branch: main
             pr_label: "merge-dev-to-main"
             github_token: ${{ secrets.TOKEN_3 }}
-            pr_title: "PR for merging dev to main ${{steps.check_versions.outputs.commit_message}}"
-            pr_body: "This is an auto generated PR for merging dev to main branch\n The commit message is ${{steps.check_versions.outputs.commit_message}}\nThe commit id is ${{steps.check_versions.outputs.commit_id}}"
+            pr_title: "PR for merging dev to main: ${{steps.check_versions.outputs.commit_message}}"
+            pr_body: "This is an auto generated PR for merging dev to main branch\n The commit message is ${{steps.check_versions.outputs.commit_message}}\nThe commit id is ${{steps.check_versions.outputs.commit_id}} "
       
         #   gh_pr_create_output=$(gh pr create --title $commit_message --body "Test PR" --base test --head $commit_message 2>&1)
 
