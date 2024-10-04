@@ -55,6 +55,7 @@ jobs:
             change_files=$(git show --name-only $commit | grep "change/")
             
             for file in $change_files; do
+              echo "Processing file: $file"
               version=$(cat $file | jq -r '.version')
               if [ -n "$version" ]; then
                 if [ "$version" \> "$current_version" ]; then
