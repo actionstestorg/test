@@ -106,6 +106,7 @@ jobs:
         id: push_branch
         if: success()
         run: |
+          git fetch --unshallow
           branch_name=$(git branch --show-current)
           echo "Pushing branch $branch_name"
           git branch
