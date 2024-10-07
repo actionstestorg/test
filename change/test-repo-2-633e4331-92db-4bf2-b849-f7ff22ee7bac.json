@@ -1,0 +1,8 @@
+{
+  "type": "patch",
+  "comment": "change files check",
+  "isVersionUpgrade": false,
+  "packageName": "test-repo-2",
+  "email": "Saurabh.Talele@bentley.com",
+  "dependentChangeType": "patch"
+}
