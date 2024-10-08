@@ -36,7 +36,7 @@ jobs:
             cd drawing-production
             git fetch --unshallow
             commits_change=$(git log --pretty=format:"%H" -- change/)
-            commits_message=$(git log --pretty=format:"%H" --grep="studio \d+\.\d+\.\d+")
+            commits_message=$(git log --pretty=format:"%H" --grep="studio.*\d+\.\d+\.\d+")
             echo "The commit are"
             echo $commits_change
             echo $commits_message
