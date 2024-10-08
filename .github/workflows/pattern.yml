@@ -58,6 +58,7 @@ jobs:
                 echo "Processing commit: $commit"
                 git checkout $commit
                 version=$(git log -1 --pretty=format:"%s" $commit | grep -oP "(\d+\.\d+\.\d+)")
+                echo "The version of the commit message is $version"
                 if [ "$version" \> "$current_version" ]; then
                   echo "The version of drawing-production repo $version is greater than current studio main version $current_version."
                 elif [ "$version" \< "$current_version" ]; then
