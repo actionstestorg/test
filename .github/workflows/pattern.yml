@@ -48,7 +48,7 @@ jobs:
       - name: check commit messages for version upgrade
         id: check_messages
         run: |
-            current_version=$(cat packages/framework/package.json | jq -r '.version')
+            current_version=$(cat package.json | jq -r '.version')
             cd drawing-production
             echo "Reading commits from file:"
             cat ${{ steps.get_commits.outputs.commits_message_file }}
