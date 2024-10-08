@@ -43,6 +43,7 @@ jobs:
             echo "$commits_change" | tr ' ' '\n' > commits_change.txt
             echo "::set-output name=commits_change_file::commits_change.txt"
             echo "$commits_message" | tr ' ' '\n' > commits_message.txt
+            cat commits_message.txt
             echo "::set-output name=commits_message_file::commits_message.txt"
 
       - name: check commit messages for version upgrade
