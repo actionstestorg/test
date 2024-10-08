@@ -65,7 +65,7 @@ jobs:
                   echo "The version of drawing-production repo $version is less than current studio main version $current_version. Exiting with issue."
                   break
                 else
-                  echo "The version of the commit message $version matches the current studio main version $current_version."
+                  echo "The version of the commit message $version matches the current studio main version $current_version. $commit"
                   change_files=$(git show --name-only $commit | grep "change/")
                   if [ -z "$change_files" ]; then
                     echo "No change files found in commit: $commit"
