@@ -77,7 +77,7 @@ jobs:
                     isVersionUpgrade=$(jq -r '.isStudioVersionUpgrade' "$file")
                     if [ "$isVersionUpgrade" != "true" ]; then
                       echo "The file $file is not a version upgrade. Skipping."
-                      continue
+                      break
                     else
                       change_file_version=$(jq -r '.targetStudioVersion' "$file")
                       if [ "$change_file_version" != "$version" ]; then
