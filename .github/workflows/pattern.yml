@@ -54,7 +54,6 @@ jobs:
             cd drawing-production
             echo "Reading commits from file:"
             cat ${{ steps.get_commits.outputs.commits_message_file }}
-            echo "File read success"
             while IFS= read -r commit; do
               echo "Processing commit: $commit"
               git checkout $commit
