@@ -67,7 +67,6 @@ jobs:
                 else
                   change_files=$(git show --name-only $commit | grep "change/")
                   echo $change_files
-                  # if the change file version does not match the commit message version, then skip the commit else create PR
                   for file in $change_files; do
                     isVersionUpgrade=$(jq -r '.isVersionUpgrade' "$file")
                     if [ "$isVersionUpgrade" != "true" ]; then
