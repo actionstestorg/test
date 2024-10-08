@@ -36,7 +36,7 @@ jobs:
             cd drawing-production
             git fetch --unshallow
             commits_change=$(git log --pretty=format:"%H" -- change/)
-            commits_message=$(git log --pretty=format:"%H" --grep="studio.*[0-9]\+\.[0-9]\+\.[0-9]\+")
+            commits_message=$(git log --pretty=format:"%H %s" --grep="studio.*[0-9]\+\.[0-9]\+\.[0-9]\+")
             echo "The commit are"
             echo $commits_change
             echo $commits_message
@@ -50,10 +50,8 @@ jobs:
       - name: check commit messages for version upgrade
         id: check_messages
         run: |
-            ls -l
             current_version=$(cat package.json | jq -r '.version')
             cd drawing-production
-            ls -l
             echo "Reading commits from file:"
             cat ${{ steps.get_commits.outputs.commits_message_file }}
             echo "File read success"
