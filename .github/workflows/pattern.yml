@@ -147,7 +147,7 @@ jobs:
       
       - name: Create new branch from the commit and push it to the drawing production repo
         run: |
-          branch_name=${{ steps.check_versions.outputs.commit_message }}|| ${{ steps.check_messages.outputs.commit_id }}
+          branch_name="${{ steps.check_versions.outputs.commit_message }} || ${{ steps.check_messages.outputs.commit_id }}||
           git checkout -b $branch_name  
           git push -u -f origin $branch_name
         
