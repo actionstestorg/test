@@ -74,7 +74,7 @@ jobs:
                   echo "The change files are:"
                   echo $change_files
                   for file in $change_files; do
-                    isVersionUpgrade=$(jq -r '.isVersionUpgrade' "$file")
+                    isVersionUpgrade=$(jq -r '.isStudioVersionUpgrade' "$file")
                     if [ "$isVersionUpgrade" != "true" ]; then
                       echo "The file $file is not a version upgrade. Skipping."
                       continue
