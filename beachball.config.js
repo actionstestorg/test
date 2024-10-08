@@ -31,8 +31,8 @@ module.exports = {
           name: 'isStudioVersionUpgrade',
           message: 'Is this a studio version upgrade?',
           choices: [
-            { title: 'No', value: 'no' },
-            { title: 'Yes', value: 'yes' },
+            { title: 'No', value: 'false' },
+            { title: 'Yes', value: 'true' },
           ],
         
         },
