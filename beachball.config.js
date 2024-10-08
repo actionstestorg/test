@@ -22,30 +22,28 @@ module.exports = {
   },
   changeFilePrompt: {
     changePrompt: (defaultPrompt, pkg) => {
-      console.log(defaultPrompt.description.onState.toString())
+      console.log(defaultPrompt.description.onState.toString());
       return [
+        defaultPrompt.changeType,
         defaultPrompt.description,
-       defaultPrompt.changeType,
-      //  check if version upgrade
-      {
-        type: 'select',
-        name: 'versionUpgrade',
-        message: 'Does these code changes targets to upgraded studio version?',
-        choices: [
-          { title: 'No', value: 'no' },
-          { title: 'Yes', value: 'yes' },
-        ],
-      
-      },
-      //if version upgrade, ask for version
-      {
-        type: (prev) => (prev === 'yes' ? 'text' : null),
-        name: 'version',
-        message: 'What studio version are you upgrading to?',
-        initial: '1.0.0',
-      },
+        {
+          type: 'select',
+          name: 'isStudioVersionUpgrade',
+          message: 'Is this a studio version upgrade?',
+          choices: [
+            { title: 'No', value: 'no' },
+            { title: 'Yes', value: 'yes' },
+          ],
+        
+        },
+        //if version upgrade, ask for version
+        {
+          type: (prev) => (prev === 'yes' ? 'text' : null),
+          name: 'targetStudioVersion',
+          message: 'Which version of Studio was used to test these changes?',
+        },
 
       ];
-    },
+    }
   },
 };

@@ -6,6 +6,10 @@ on:
 jobs:
   filter-commits:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write 
+      pull-requests: write
+      actions: write
 
     steps:
 
@@ -18,80 +22,169 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
-          path: test
+          path: drawing-production
+          ref: dev
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
           node-version: '16'
 
-      - name: Get all commits with change files
+      - name: Get all commits with change files or commit message to upgrade from drawing-production repo
         id: get_commits
         run: |
-          cd test
-          git fetch --unshallow
-          commits=$(git log --pretty=format:"%H" -- change/)
-          echo "The commit are"
-          echo $commits
-          echo "$commits" | tr ' ' '\n' > commits.txt
-          echo "::set-output name=commits_file::commits.txt"
+            cd drawing-production
+            git fetch --unshallow
+            commits_change=$(git log --pretty=format:"%H" -- change/)
+            commits_message=$(git log --pretty=format:"%H" --grep="studio.*[0-9]\+\.[0-9]\+\.[0-9]\+")
+            echo "The commit are"
+            echo $commits_change
+            echo $commits_message
+            echo "$commits_change" | tr ' ' '\n' > commits_change.txt
+            echo "::set-output name=commits_change_file::commits_change.txt"
+            echo "$commits_message" | tr ' ' '\n' > commits_message.txt
+            echo "commit message file"
+            cat commits_message.txt
+            echo "::set-output name=commits_message_file::commits_message.txt"
 
-      - name: Check change files for version
-        id: check_versions
+      - name: check commit messages for version upgrade
+        id: check_messages
         run: |
-          ls -l
-          current_version=$(cat package.json | jq -r '.version')
-          cd test
-          echo "Reading commits from file:"
-          cat ${{ steps.get_commits.outputs.commits_file }}
-          while IFS= read -r commit; do
-            echo "Processing commit: $commit"
-            git checkout $commit
-            change_files=$(git show --name-only $commit | grep "change/")
-            
-            for file in $change_files; do
-              version=$(cat $file | jq -r '.version')
-              if [ -n "$version" ]; then
+              current_version=$(jq -r '.version' package.json)
+              cd drawing-production
+              echo "Reading commits from file:"
+              cat ${{ steps.get_commits.outputs.commits_message_file }}
+              while IFS= read -r commit; do
+                echo "Processing commit: $commit"
+                git checkout $commit
+                version=$(git log -1 --pretty=format:"%s" $commit | grep -oP "(\d+\.\d+\.\d+)")
+                echo "The version of the commit message is $version $current_version"
                 if [ "$version" \> "$current_version" ]; then
-                  echo "Version $version is greater than current version $current_version. Continuing to next commit."
-                  continue
+                  echo "The version of drawing-production repo $version is greater than current studio main version $current_version."
                 elif [ "$version" \< "$current_version" ]; then
-                  echo "Version $version is less than current version $current_version. Exiting with issue."
-                  exit 1
-                else
-                  echo "Creating PR for commit $commit with version $version."
-                  echo $(git log -1 --pretty=format:"%s" $commit) > commit_message.txt
-                  status="success"
+                  echo "The version of drawing-production repo $version is less than current studio main version $current_version. Exiting with issue."
                   break
+                else
+                  echo "The version of the commit message $version matches the current studio main version $current_version. $commit"
+                  change_files=$(git show --name-only $commit | grep "change/")
+                  if [ -z "$change_files" ]; then
+                    echo "No change files found in commit: $commit"
+                    break
+                  fi
+                  echo "The change files are:"
+                  echo $change_files
+                  for file in $change_files; do
+                    isVersionUpgrade=$(jq -r '.isVersionUpgrade' "$file")
+                    if [ "$isVersionUpgrade" != "true" ]; then
+                      echo "The file $file is not a version upgrade. Skipping."
+                      continue
+                    else
+                      change_file_version=$(jq -r '.targetStudioVersion' "$file")
+                      if [ "$change_file_version" != "$version" ]; then
+                        echo "The version of the commit message $version does not match the version of the change file $change_file_version. Skipping the commit."
+                        break
+                      fi
+                      echo "Creating PR for commit $commit with version $version."
+                      echo "::set-output name=commit_message::$(git log -1 --pretty=format:"%s" $commit | tr ' ' '_')"
+                      echo "::set-output name=commit_id::$(git log -1 --pretty=format:"%H" $commit)"
+                      status="success"
+                      break
+                    fi
+                  done
                 fi
-              fi
-            done
-            if [ "$status" = "success" ]; then
-              break
-            fi
-          done < ${{ steps.get_commits.outputs.commits_file }}
-
-      - name: Create Pull Request
-        if: success()
+              done < ${{ steps.get_commits.outputs.commits_message_file }}
+          
+  
+      - name: Check change files for target version similar to studio main version
+        id: check_versions
+        if: steps.check_messages.outcome != 'success'
         run: |
-          cd test
-          git remote -v
+            
+            current_version=$(cat packages/framework/package.json | jq -r '.version')
+            cd drawing-production
+            echo "Reading commits from file:"
+            cat ${{ steps.get_commits.outputs.commits_change_file }}
+            while IFS= read -r commit; do
+              echo "Processing commit: $commit"-
+              git checkout $commit
+              change_files=$(git show --name-only $commit | grep "change/")
+              echo $change_files
+              for file in $change_files; do
+                echo "Processing file: $file"
+                isVersionUpgrade=$(cat $file | jq -r '.isVersionUpgrade')
+                if [ "$isVersionUpgrade" != "true" ]; then
+                  echo "The file $file is not a version upgrade. Skipping."
+                  continue
+                fi
+                version=$(cat $file | jq -r '.targetStudioVersion')
+  
+                if [ -n "$version" ]; then
+                  if [ "$version" \> "$current_version" ]; then
+                    echo "The version of drawing-production repo $version is greater than current studio main version $current_version."
+                  elif [ "$version" \< "$current_version" ]; then
+                    echo "The version of drawing-production repo $version is less than current studio main version $current_version. Exiting with issue."
+                    exit 1
+                  else
+                    echo "Creating PR for commit $commit with version $version."
+                    echo "::set-output name=commit_message::$(git log -1 --pretty=format:"%s" $commit | tr ' ' '_')"
+                    echo "::set-output name=commit_id::$(git log -1 --pretty=format:"%H" $commit)"
+                    status="success"
+                    break
+                  fi
+                fi
+              done
+              if [ "$status" = "success" ]; then
+                break
+              fi
+            done < ${{ steps.get_commits.outputs.commits_change_file }}
 
-          commit_message=$(cat commit_message.txt)
-          branch_name=$(echo $commit_message | tr ' ' '_')
+      - name: Checkout to commit having the taget studio version in drawing production repo
+        uses: actions/checkout@v2
+        with:
+            ref: ${{ steps.check_versions.outputs.commit_id }}
+            token: ${{ secrets.TOKEN_3 }}
+      
+      - name: Create new branch from the commit and push it to the drawing production repo
+        run: |
+          branch_name=${{ steps.check_versions.outputs.commit_message }}
           git checkout -b $branch_name  
           git push -u -f origin $branch_name
-          gh_pr_create_output=$(gh pr create --title $commit_message --body "Test PR" --base test --head $commit_message 2>&1)
+        
+      # - name: Get PR number
+      #   id: get_pr
+      #   run: |
+      #       COMMIT_HASH=${{ steps.check_versions.outputs.commit_id }}
+      #       PR_NUMBER=$(gh pr list --state all --json number,commits --jq ".[] | select(.commits[].oid == \"$COMMIT_HASH\") | .number")
+      #       echo "::set-output name=pr_number::$PR_NUMBER"
+      #       echo "PR number is $PR_NUMBER"
+      #   env:
+      #       GITHUB_TOKEN: ${{ secrets.TOKEN_3 }}
 
-          echo "$gh_pr_create_output"
+        
+        
+      - name: Create pull request in drawing-production from dev branch to main branch
+        id: create_pr
+        uses: repo-sync/pull-request@v2
+        with:
+            source_branch: ${{steps.check_versions.outputs.commit_message}}
+            destination_branch: main
+            pr_label: "merge-dev-to-main"
+            github_token: ${{ secrets.TOKEN_3 }}
+            pr_title: "PR for merging dev to main: ${{steps.check_versions.outputs.commit_message}}"
+            pr_body: "This is an auto generated PR for merging dev to main branch\n The commit message is ${{steps.check_versions.outputs.commit_message}}\nThe commit id is ${{steps.check_versions.outputs.commit_id}} "
+      
+        #   gh_pr_create_output=$(gh pr create --title $commit_message --body "Test PR" --base test --head $commit_message 2>&1)
+
+
+        #   echo "$gh_pr_create_output"
           
-          if echo "$gh_pr_create_output" | grep -q "https://github.com/"; then
-            echo "PR is created successfully."
-          else
-            echo "Failed to create PR."
-          fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN_3 }}
+        #   if echo "$gh_pr_create_output" | grep -q "https://github.com/"; then
+        #     echo "PR is created successfully."
+        #   else
+        #     echo "Failed to create PR."
+        #   fi
+        # env:
+        #   GITHUB_TOKEN: ${{ secrets.TOKEN_3 }}
 
 
           

@@ -2,6 +2,166 @@
   "name": "test-repo-2",
   "entries": [
     {
+      "date": "Mon, 07 Oct 2024 11:36:15 GMT",
+      "version": "2.3.1",
+      "tag": "test-repo-2_v2.3.1",
+      "comments": {
+        "patch": [
+          {
+            "author": "Saurabh.Talele@bentley.com",
+            "package": "test-repo-2",
+            "commit": "a6915d6ea7251d313c13479c0851893ac74e2baa",
+            "comment": "change files check",
+            "isVersionUpgrade": false
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 07 Oct 2024 11:31:26 GMT",
+      "version": "2.3.0",
+      "tag": "test-repo-2_v2.3.0",
+      "comments": {
+        "minor": [
+          {
+            "author": "Saurabh.Talele@bentley.com",
+            "package": "test-repo-2",
+            "commit": "e6e40e3fbebc9a8bd36e065adbc46207c581487f",
+            "comment": "Merge branch 'dev' of https://github.com/actionstestorg/test into dev",
+            "isStudioVersionUpgrade": "yes",
+            "targetStudioVersion": "1.0.81"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Fri, 04 Oct 2024 07:26:27 GMT",
+      "version": "2.2.13",
+      "tag": "test-repo-2_v2.2.13",
+      "comments": {
+        "patch": [
+          {
+            "author": "Saurabh.Talele@bentley.com",
+            "package": "test-repo-2",
+            "commit": "f52c5b1a6b422d5d7e5cb33abfeeef0415f0fe91",
+            "comment": "bump",
+            "isStudioVersionUpgrade": "yes",
+            "targetStudioVersion": "1.0.81"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Fri, 04 Oct 2024 07:16:24 GMT",
+      "version": "2.2.12",
+      "tag": "test-repo-2_v2.2.12",
+      "comments": {
+        "patch": [
+          {
+            "author": "Saurabh.Talele@bentley.com",
+            "package": "test-repo-2",
+            "commit": "a39a5b8e38525624438ecceff4a13c2ea8df145d",
+            "comment": "bump",
+            "isStudioVersionUpgrade": "yes",
+            "targetStudioVersion": "1.0.80"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Thu, 03 Oct 2024 12:02:52 GMT",
+      "version": "2.2.11",
+      "tag": "test-repo-2_v2.2.11",
+      "comments": {
+        "patch": [
+          {
+            "author": "Saurabh.Talele@bentley.com",
+            "package": "test-repo-2",
+            "commit": "6d5f9eb8120fae21997e8803714a1eff9f2e025f",
+            "comment": "1.0.80",
+            "versionUpgrade": "yes",
+            "version": "1.0.80"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Thu, 03 Oct 2024 10:51:37 GMT",
+      "version": "2.2.10",
+      "tag": "test-repo-2_v2.2.10",
+      "comments": {
+        "patch": [
+          {
+            "author": "Saurabh.Talele@bentley.com",
+            "package": "test-repo-2",
+            "commit": "3709b18f243e556eea8a39d575277a41148932b6",
+            "comment": "1.0.80",
+            "versionUpgrade": "yes",
+            "version": "1.0.80"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Thu, 03 Oct 2024 10:48:34 GMT",
+      "version": "2.2.9",
+      "tag": "test-repo-2_v2.2.9",
+      "comments": {
+        "patch": [
+          {
+            "author": "Saurabh.Talele@bentley.com",
+            "package": "test-repo-2",
+            "commit": "e010ce404adce143ece25645500920e411caad2b",
+            "comment": "1.0.56",
+            "versionUpgrade": "yes",
+            "version": "1.0.56"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Thu, 03 Oct 2024 10:47:57 GMT",
+      "version": "2.2.8",
+      "tag": "test-repo-2_v2.2.8",
+      "comments": {
+        "patch": [
+          {
+            "author": "Saurabh.Talele@bentley.com",
+            "package": "test-repo-2",
+            "commit": "3619ab0ca4deb29844b8a122b5e1c3fbe01efaa9",
+            "comment": "test",
+            "versionUpgrade": "yes",
+            "version": "1.0.80"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Thu, 03 Oct 2024 10:38:41 GMT",
+      "version": "2.2.7",
+      "tag": "test-repo-2_v2.2.7",
+      "comments": {
+        "patch": [
+          {
+            "author": "Saurabh.Talele@bentley.com",
+            "package": "test-repo-2",
+            "commit": "5a40b210177f13c7600c447c4069a88830b78b19",
+            "comment": "update",
+            "versionUpgrade": "yes",
+            "version": "1.0.80"
+          },
+          {
+            "author": "Saurabh.Talele@bentley.com",
+            "package": "test-repo-2",
+            "commit": "0f89f2fd1f95777b89e4cf03155f292879b4008c",
+            "comment": "update",
+            "versionUpgrade": "yes",
+            "version": "1.0.79"
+          }
+        ]
+      }
+    },
+    {
       "date": "Thu, 03 Oct 2024 09:58:08 GMT",
       "version": "2.2.6",
       "tag": "test-repo-2_v2.2.6",
