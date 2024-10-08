@@ -150,7 +150,7 @@ jobs:
           git fetch --unshallow
           
           if [ -z "${{ steps.check_messages.outputs.commit_id }}" ]; then
-            branch_name=${{ steps.check_versions.outputs.commit_id }}
+            branch_name=${{ steps.check_versions.outputs.commit_message }}
           else
             branch_name=${{ steps.check_messages.outputs.commit_message }}
           fi
