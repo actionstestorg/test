@@ -84,9 +84,10 @@ jobs:
                         echo "The version of the commit message $version does not match the version of the change file $change_file_version. Skipping the commit."
                         break
                       fi
-                      echo "Creating PR for commit $commit with version $version."
-                      echo "::set-output name=commit_message::$(git log -1 --pretty=format:"%s" $commit | tr ' ' '_')"
-                      echo "::set-output name=commit_id::$(git log -1 --pretty=format:"%H" $commit)"
+                        echo "Creating PR for commit $commit with version $version."
+                        echo "::set-output name=commit_message::$(git log -1 --pretty=format:"%s" $commit | tr ' ' '_')"
+                        echo "::set-output name=commit_id::$(git log -1 --pretty=format:"%H" $commit)"
+                        echo "::set-output name=outcome::success"
                       status="success"
                       break
                     fi
@@ -97,7 +98,7 @@ jobs:
   
       - name: Check change files for target version similar to studio main version
         id: check_versions
-        if: steps.check_messages.outcome != 'success'
+        if: steps.check_messages.outpu.outcome != 'success'
         run: |
             
             current_version=$(cat packages/framework/package.json | jq -r '.version')
