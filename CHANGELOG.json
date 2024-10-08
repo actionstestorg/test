@@ -2,6 +2,39 @@
   "name": "test-repo-2",
   "entries": [
     {
+      "date": "Mon, 07 Oct 2024 11:36:15 GMT",
+      "version": "2.3.1",
+      "tag": "test-repo-2_v2.3.1",
+      "comments": {
+        "patch": [
+          {
+            "author": "Saurabh.Talele@bentley.com",
+            "package": "test-repo-2",
+            "commit": "a6915d6ea7251d313c13479c0851893ac74e2baa",
+            "comment": "change files check",
+            "isVersionUpgrade": false
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 07 Oct 2024 11:31:26 GMT",
+      "version": "2.3.0",
+      "tag": "test-repo-2_v2.3.0",
+      "comments": {
+        "minor": [
+          {
+            "author": "Saurabh.Talele@bentley.com",
+            "package": "test-repo-2",
+            "commit": "e6e40e3fbebc9a8bd36e065adbc46207c581487f",
+            "comment": "Merge branch 'dev' of https://github.com/actionstestorg/test into dev",
+            "isStudioVersionUpgrade": "yes",
+            "targetStudioVersion": "1.0.81"
+          }
+        ]
+      }
+    },
+    {
       "date": "Fri, 04 Oct 2024 07:26:27 GMT",
       "version": "2.2.13",
       "tag": "test-repo-2_v2.2.13",

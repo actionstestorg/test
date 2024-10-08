@@ -30,52 +30,102 @@ jobs:
         with:
           node-version: '16'
 
-      - name: Get all commits with change files
+      - name: Get all commits with change files or commit message to upgrade from drawing-production repo
         id: get_commits
         run: |
-          cd test
-          git fetch --unshallow
-          commits=$(git log --pretty=format:"%H" -- change/)
-          echo "The commit are"
-          echo $commits
-          echo "$commits" | tr ' ' '\n' > commits.txt
-          echo "::set-output name=commits_file::commits.txt"
+            cd drawing-production
+            git fetch --unshallow
+            commits_change=$(git log --pretty=format:"%H" -- change/)
+            commits_message=$(git log --pretty=format:"%H" --grep="Upgrade studio version")
+            echo "The commit are"
+            echo $commits_change
+            echo $commits_message
+            echo "$commits_change" | tr ' ' '\n' > commits_change.txt
+            echo "::set-output name=commits_change_file::commits_change.txt"
+            echo "$commits_message" | tr ' ' '\n' > commits_message.txt
+            echo "::set-output name=commits_message_file::commits_message.txt"
 
-      - name: Check change files for version
-        id: check_versions
+      - name: check commit messages for version upgrade
+        id: check_messages
         run: |
-          ls -l
-          current_version=$(cat package.json | jq -r '.version')
-          cd test
-          echo "Reading commits from file:"
-          cat ${{ steps.get_commits.outputs.commits_file }}
-          while IFS= read -r commit; do
-            echo "Processing commit: $commit"
-            git checkout $commit
-            change_files=$(git show --name-only $commit | grep "change/")
-            
-            for file in $change_files; do
-              echo "Processing file: $file"
-              version=$(cat $file | jq -r '.targetStudioVersion')
-              if [ -n "$version" ]; then
+            current_version=$(cat packages/framework/package.json | jq -r '.version')
+            cd drawing-production
+            echo "Reading commits from file:"
+            cat ${{ steps.get_commits.outputs.commits_message_file }}
+            while IFS= read -r commit; do
+              echo "Processing commit: $commit"
+              git checkout $commit
+                version=$(git log -1 --pretty=format:"%s" $commit | grep -oP "(\d+\.\d+\.\d+)")
                 if [ "$version" \> "$current_version" ]; then
-                  echo "Version $version is greater than current version $current_version. Continuing to next commit."
+                  echo "The version of drawing-production repo $version is greater than current studio main version $current_version."
                 elif [ "$version" \< "$current_version" ]; then
-                  echo "Version $version is less than current version $current_version. Exiting with issue."
-                  exit 1
+                  echo "The version of drawing-production repo $version is less than current studio main version $current_version. Exiting with issue."
+                  break
                 else
+                  change_files=$(git show --name-only $commit | grep "change/")
+                  echo $change_files
+                  # if the change file version does not match the commit message version, then skip the commit else create PR
+                  for file in $change_files; do
+                  isVersionUpgrade=$(cat $file | jq -r '.isVersionUpgrade')
+                  if [ "$isVersionUpgrade" != "true" ]; then
+                    echo "The file $file is not a version upgrade. Skipping."
+                    continue
+                  else
+                    change_file_version=$(cat $file | jq -r '.targetStudioVersion')
+                    if $change_file_version != $version; then
+                      echo "The version of the commit message $version does not match the version of the change file $version. Skipping the commit."
+                      break
+                  fi
                   echo "Creating PR for commit $commit with version $version."
                   echo "::set-output name=commit_message::$(git log -1 --pretty=format:"%s" $commit | tr ' ' '_')"
                   echo "::set-output name=commit_id::$(git log -1 --pretty=format:"%H" $commit)"
                   status="success"
                   break
                 fi
+            done < ${{ steps.get_commits.outputs.commits_message_file }}
+  
+      - name: Check change files for target version similar to studio main version
+        id: check_versions
+        if: steps.check_messages.outcome != 'success'
+        run: |
+            
+            current_version=$(cat packages/framework/package.json | jq -r '.version')
+            cd drawing-production
+            echo "Reading commits from file:"
+            cat ${{ steps.get_commits.outputs.commits_change_file }}
+            while IFS= read -r commit; do
+              echo "Processing commit: $commit"-
+              git checkout $commit
+              change_files=$(git show --name-only $commit | grep "change/")
+              echo $change_files
+              for file in $change_files; do
+                echo "Processing file: $file"
+                isVersionUpgrade=$(cat $file | jq -r '.isVersionUpgrade')
+                if [ "$isVersionUpgrade" != "true" ]; then
+                  echo "The file $file is not a version upgrade. Skipping."
+                  continue
+                fi
+                version=$(cat $file | jq -r '.targetStudioVersion')
+  
+                if [ -n "$version" ]; then
+                  if [ "$version" \> "$current_version" ]; then
+                    echo "The version of drawing-production repo $version is greater than current studio main version $current_version."
+                  elif [ "$version" \< "$current_version" ]; then
+                    echo "The version of drawing-production repo $version is less than current studio main version $current_version. Exiting with issue."
+                    exit 1
+                  else
+                    echo "Creating PR for commit $commit with version $version."
+                    echo "::set-output name=commit_message::$(git log -1 --pretty=format:"%s" $commit | tr ' ' '_')"
+                    echo "::set-output name=commit_id::$(git log -1 --pretty=format:"%H" $commit)"
+                    status="success"
+                    break
+                  fi
+                fi
+              done
+              if [ "$status" = "success" ]; then
+                break
               fi
-            done
-            if [ "$status" = "success" ]; then
-              break
-            fi
-          done < ${{ steps.get_commits.outputs.commits_file }}
+            done < ${{ steps.get_commits.outputs.commits_change_file }}
 
       - name: Checkout to commit having the taget studio version in drawing production repo
         uses: actions/checkout@v2
