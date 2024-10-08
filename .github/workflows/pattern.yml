@@ -50,13 +50,13 @@ jobs:
       - name: check commit messages for version upgrade
         id: check_messages
         run: |
-            current_version=$(cat package.json | jq -r '.version')
-            cd drawing-production
-            echo "Reading commits from file:"
-            cat ${{ steps.get_commits.outputs.commits_message_file }}
-            while IFS= read -r commit; do
-              echo "Processing commit: $commit"
-              git checkout $commit
+              current_version=$(jq -r '.version' package.json)
+              cd drawing-production
+              echo "Reading commits from file:"
+              cat ${{ steps.get_commits.outputs.commits_message_file }}
+              while IFS= read -r commit; do
+                echo "Processing commit: $commit"
+                git checkout $commit
                 version=$(git log -1 --pretty=format:"%s" $commit | grep -oP "(\d+\.\d+\.\d+)")
                 if [ "$version" \> "$current_version" ]; then
                   echo "The version of drawing-production repo $version is greater than current studio main version $current_version."
@@ -68,23 +68,26 @@ jobs:
                   echo $change_files
                   # if the change file version does not match the commit message version, then skip the commit else create PR
                   for file in $change_files; do
-                  isVersionUpgrade=$(cat $file | jq -r '.isVersionUpgrade')
-                  if [ "$isVersionUpgrade" != "true" ]; then
-                    echo "The file $file is not a version upgrade. Skipping."
-                    continue
-                  else
-                    change_file_version=$(cat $file | jq -r '.targetStudioVersion')
-                    if $change_file_version != $version; then
-                      echo "The version of the commit message $version does not match the version of the change file $version. Skipping the commit."
+                    isVersionUpgrade=$(jq -r '.isVersionUpgrade' "$file")
+                    if [ "$isVersionUpgrade" != "true" ]; then
+                      echo "The file $file is not a version upgrade. Skipping."
+                      continue
+                    else
+                      change_file_version=$(jq -r '.targetStudioVersion' "$file")
+                      if [ "$change_file_version" != "$version" ]; then
+                        echo "The version of the commit message $version does not match the version of the change file $change_file_version. Skipping the commit."
+                        break
+                      fi
+                      echo "Creating PR for commit $commit with version $version."
+                      echo "::set-output name=commit_message::$(git log -1 --pretty=format:"%s" $commit | tr ' ' '_')"
+                      echo "::set-output name=commit_id::$(git log -1 --pretty=format:"%H" $commit)"
+                      status="success"
                       break
-                  fi
-                  echo "Creating PR for commit $commit with version $version."
-                  echo "::set-output name=commit_message::$(git log -1 --pretty=format:"%s" $commit | tr ' ' '_')"
-                  echo "::set-output name=commit_id::$(git log -1 --pretty=format:"%H" $commit)"
-                  status="success"
-                  break
+                    fi
+                  done
                 fi
-            done < ${{ steps.get_commits.outputs.commits_message_file }}
+              done < ${{ steps.get_commits.outputs.commits_message_file }}
+          
   
       - name: Check change files for target version similar to studio main version
         id: check_versions
