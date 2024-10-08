@@ -67,6 +67,7 @@ jobs:
                 else
                   echo "The version of the commit message $version matches the current studio main version $current_version."
                   change_files=$(git show --name-only $commit | grep "change/")
+                  echo "The change files are:"
                   echo $change_files
                   for file in $change_files; do
                     isVersionUpgrade=$(jq -r '.isVersionUpgrade' "$file")
