@@ -97,8 +97,9 @@ jobs:
   
       - name: Check change files for target version similar to studio main version
         id: check_versions
-        if: github.env.success != true
+        if: env.success != true
         run: |
+
             current_version=$(cat packages/framework/package.json | jq -r '.version')
             cd drawing-production
             echo "Reading commits from file:"
