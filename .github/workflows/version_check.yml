@@ -15,15 +15,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Install PowerShell
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y wget apt-transport-https software-properties-common
-          wget -q "https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb"
-          sudo dpkg -i packages-microsoft-prod.deb
-          sudo apt-get update
-          sudo apt-get install -y powershell
-
       - name: Download EXE file
         run: |
           wget -O iTwinStudioforDevelopersSetup.exe https://autoupdatecdn.bentley.com/itwindesktopplatform/developer/iTwinStudioforDevelopersSetup.exe
@@ -34,17 +25,10 @@ jobs:
     
      
       - name: Get EXE Version
-        run: |
-          ls -l
-          peres -v iTwinStudioforDevelopersSetup.exe 
-          $exePath = "iTwinStudioforDevelopersSetup.exe"
-          $versionInfo = (Get-Item $exePath).VersionInfo
-          $version = $versionInfo.FileVersion
-          $version
+        run: |  
+          version=$(peres -v iTwinStudioforDevelopersSetup.exe)
           echo $version
-          echo "exe_version=$version" >> GITHUB_ENV
-        shell: pwsh
-    
+          
       - name: print the version of the exe
         run: |
             echo "The version of the exe is ${{ env.exe_version }}"
