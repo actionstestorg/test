@@ -51,7 +51,7 @@ jobs:
               current_version=$(jq -r '.version' package.json)
               cd drawing-production
               echo "Reading commits from file:"
-              cat $commit_messages
+              cat $commits_message_file
               while IFS= read -r commit; do
                 echo "Processing commit: $commit"
                 git checkout $commit
