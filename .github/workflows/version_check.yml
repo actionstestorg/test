@@ -38,3 +38,7 @@ jobs:
           echo $version
           echo "exe_version=$version" >> GITHUB_ENV
         shell: pwsh
+    
+      - name: print the version of the exe
+        run: |
+            echo "The version of the exe is ${{ env.exe_version }}"
