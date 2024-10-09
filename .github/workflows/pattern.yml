@@ -85,10 +85,14 @@ jobs:
                         break
                       fi
                         echo "Creating PR for commit $commit with version $version."
+                        commit_message=$(git log -1 --pretty=format:"%s" $commit | tr ' ' '_')
+                        sanitized_commit_message=$(echo "$commit_message" | sed 's/(#[0-9]*)//g' | tr ' ' '_')
+
                         echo "::set-output name=commit_message::$(git log -1 --pretty=format:"%s" $commit | tr ' ' '_')"
                         echo "::set-output name=commit_id::$(git log -1 --pretty=format:"%H" $commit)"
                         echo "::set-output name=outcome::success"
-                      status="success"
+                        echo "commit_id=$(git log -1 --pretty=format:"%H" $commit)" >> $GITHUB_ENV
+
                       break
                     fi
                   done
@@ -100,7 +104,7 @@ jobs:
         id: check_versions
         if: steps.check_messages.outputs.outcome != 'success'
         run: |
-            
+            echo $commit_id
             current_version=$(cat packages/framework/package.json | jq -r '.version')
             cd drawing-production
             echo "Reading commits from file:"
