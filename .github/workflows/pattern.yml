@@ -126,8 +126,9 @@ jobs:
                   else
                     echo "Creating PR for commit $commit with version $version."
                     echo "success=true" >> $GITHUB_ENV
-                    echo "commit_id=$(git log -1 --pretty=format:"%H" $commit)" >> $GITHUB_ENV
-                    echo "commit_message=$(git log -1 --pretty=format:"%s" $commit | tr ' ' '_')" >> $GITHUB_ENV
+                    echo "commit_id=$(git log -1 --pretty=format:%H $commit)" >> $GITHUB_ENV
+                    commit_message=$(git log -1 --pretty=format:"%s" $commit | tr ' ' '_')
+                    echo "commit_message=$(echo "$commit_message" | sed 's/(#[0-9]*)//g' | tr ' ' '_')" >> $GITHUB_ENV
                     break
                   fi
                 fi
