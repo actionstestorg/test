@@ -15,26 +15,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Install PowerShell
+      - name: Download .deb file
         run: |
-          sudo apt-get update
-          sudo apt-get install -y wget apt-transport-https software-properties-common
-          wget -q "https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb"
-          sudo dpkg -i packages-microsoft-prod.deb
-          sudo apt-get update
-          sudo apt-get install -y powershell
+          wget -O iTwinStudioforDevelopers.deb https://autoupdatecdn.bentley.com/itwindesktopplatform/developer/iTwinStudioforDevelopers.deb
 
-      - name: Download EXE file
+      - name: Get .deb Version
         run: |
-          wget -O iTwinStudioforDevelopersSetup.exe https://autoupdatecdn.bentley.com/itwindesktopplatform/developer/iTwinStudioforDevelopersSetup.exe
-
-      - name: Get EXE Version
-        run: |
-          ls -l
-          $exePath = "iTwinStudioforDevelopersSetup.exe"
-          $versionInfo = (Get-Item $exePath).VersionInfo
-          $version = $versionInfo.FileVersion
-          $version
-          echo "EXE Version: $version"
-          echo "exe_version=$version" >> GITHUB_ENV
-        shell: pwsh
+          debPath="iTwinStudioforDevelopers.deb"
+          version=$(dpkg-deb -f "$debPath" Version)
+          echo "DEB Version: $version"
+          echo "deb_version=$version" >> $GITHUB_ENV
