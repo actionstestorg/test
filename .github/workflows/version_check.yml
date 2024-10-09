@@ -26,7 +26,7 @@ jobs:
      
       - name: Get EXE Version
         run: |  
-          echo "$(peres -v iTwinStudioforDevelopersSetup.exe)" > exe_version.txt
+          echo "$(peres -v iTwinStudioforDevelopersSetup.exe | grep "ProductVersion" | awk '{print $2}')" > exe_version.txt
           cat exe_version.txt
           
       - name: print the version of the exe
