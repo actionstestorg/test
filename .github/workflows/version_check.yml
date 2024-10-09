@@ -30,9 +30,9 @@ jobs:
 
       - name: Get EXE Version
         run: |
-          exePath="iTwinStudioforDevelopersSetup.exe"
-          versionInfo=(Get-Item $exePath).VersionInfo
-          version=$versionInfo.FileVersion
+          $exePath="iTwinStudioforDevelopersSetup.exe"
+          $versionInfo = (Get-Item $exePath).VersionInfo
+          $versionInfo = (Get-Item $exePath).VersionInfo
           echo "EXE Version: $version"
           echo "exe_version=$version" >> $env:GITHUB_ENV
         shell: pwsh
