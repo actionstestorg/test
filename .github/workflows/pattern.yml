@@ -45,7 +45,7 @@ jobs:
             echo "$commits_message" | tr ' ' '\n' > commits_message.txt
             echo "commit message file"
             cat commits_message.txt
-            echo "$commit_messages=commits_message.txt" >> $GITHUB_ENV
+            echo "$commits_message=commits_message.txt" >> $GITHUB_ENV
 
       - name: check commit messages for version upgrade
         id: check_messages
