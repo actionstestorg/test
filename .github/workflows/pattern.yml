@@ -92,7 +92,7 @@ jobs:
                     fi
                   done
                 fi
-              done < $commit_messages
+              done < $commits_message_file
           
   
       - name: Check change files for target version similar to studio main version
