@@ -30,6 +30,7 @@ jobs:
 
       - name: Get EXE Version
         run: |
+          ls -l
           $exePath = "iTwinStudioforDevelopersSetup.exe"
           $versionInfo = (Get-Item $exePath).VersionInfo
           $version = $versionInfo.FileVersion
