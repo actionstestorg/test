@@ -27,15 +27,16 @@ jobs:
       - name: Download EXE file
         run: |
           wget -O iTwinStudioforDevelopersSetup.exe https://autoupdatecdn.bentley.com/itwindesktopplatform/developer/iTwinStudioforDevelopersSetup.exe
+        
+      - name: install pev
+        run: |
+          sudo apt-get install -y pev
     
-      - name: Install Wine
-        run: sudo apt-get install -y wine
-
+     
       - name: Get EXE Version
         run: |
           ls -l
-          wine 
-          ./iTwinStudioforDevelopersSetup.exe --version
+          peres -v iTwinStudioforDevelopersSetup.exe 
           $exePath = "iTwinStudioforDevelopersSetup.exe"
           $versionInfo = (Get-Item $exePath).VersionInfo
           $version = $versionInfo.FileVersion
