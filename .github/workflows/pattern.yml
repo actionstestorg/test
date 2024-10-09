@@ -37,15 +37,13 @@ jobs:
             git fetch --unshallow
             commits_change=$(git log --pretty=format:"%H" -- change/)
             commits_message=$(git log --pretty=format:"%H" --grep="studio.*[0-9]\+\.[0-9]\+\.[0-9]\+")
-            echo "The commit are"
-            echo $commits_change
-            echo $commits_message
+            echo "The commits are"
             echo "$commits_change" | tr ' ' '\n' > commits_change.txt
             echo "commits_change_file=commits_change.txt" >> $GITHUB_ENV
             echo "$commits_message" | tr ' ' '\n' > commits_message.txt
             echo "commit message file"
             cat commits_message.txt
-            echo "$commits_message=commits_message.txt" >> $GITHUB_ENV
+            echo "commits_message_file=commits_message.txt" >> $GITHUB_ENV
 
       - name: check commit messages for version upgrade
         id: check_messages
