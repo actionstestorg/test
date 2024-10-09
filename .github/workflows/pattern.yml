@@ -41,11 +41,11 @@ jobs:
             echo $commits_change
             echo $commits_message
             echo "$commits_change" | tr ' ' '\n' > commits_change.txt
-            echo "::set-output name=commits_change_file::commits_change.txt"
+            echo "commits_change_file=commits_change.txt" >> $GITHUB_ENV
             echo "$commits_message" | tr ' ' '\n' > commits_message.txt
             echo "commit message file"
             cat commits_message.txt
-            echo "::set-output name=commits_message_file::commits_message.txt"
+            echo "$commit_messages=commits_message.txt" >> $GITHUB_ENV
 
       - name: check commit messages for version upgrade
         id: check_messages
@@ -53,7 +53,7 @@ jobs:
               current_version=$(jq -r '.version' package.json)
               cd drawing-production
               echo "Reading commits from file:"
-              cat ${{ steps.get_commits.outputs.commits_message_file }}
+              cat $commit_messages
               while IFS= read -r commit; do
                 echo "Processing commit: $commit"
                 git checkout $commit
@@ -86,29 +86,25 @@ jobs:
                       fi
                         echo "Creating PR for commit $commit with version $version."
                         commit_message=$(git log -1 --pretty=format:"%s" $commit | tr ' ' '_')
-                        sanitized_commit_message=$(echo "$commit_message" | sed 's/(#[0-9]*)//g' | tr ' ' '_')
-                        echo $sanitized_commit_message
-                        echo "::set-output name=commit_message::$(git log -1 --pretty=format:"%s" $commit | tr ' ' '_')"
-                        echo "::set-output name=commit_id::$(git log -1 --pretty=format:"%H" $commit)"
-                        echo "::set-output name=outcome::success"
+                        echo "commit_message=$(echo "$commit_message" | sed 's/(#[0-9]*)//g' | tr ' ' '_')" >> $GITHUB_ENV
+                        echo "success=true" >> $GITHUB_ENV
                         echo "commit_id=$(git log -1 --pretty=format:"%H" $commit)" >> $GITHUB_ENV
 
                       break
                     fi
                   done
                 fi
-              done < ${{ steps.get_commits.outputs.commits_message_file }}
+              done < $commit_messages
           
   
       - name: Check change files for target version similar to studio main version
         id: check_versions
-        if: steps.check_messages.outputs.outcome != 'success'
+        if: github.env.success != 'true'
         run: |
-            echo $commit_id
             current_version=$(cat packages/framework/package.json | jq -r '.version')
             cd drawing-production
             echo "Reading commits from file:"
-            cat ${{ steps.get_commits.outputs.commits_change_file }}
+            cat $commits_change_file
             while IFS= read -r commit; do
               echo "Processing commit: $commit"-
               git checkout $commit
@@ -131,9 +127,9 @@ jobs:
                     exit 1
                   else
                     echo "Creating PR for commit $commit with version $version."
-                    echo "::set-output name=commit_message::$(git log -1 --pretty=format:"%s" $commit | tr ' ' '_')"
-                    echo "::set-output name=commit_id::$(git log -1 --pretty=format:"%H" $commit)"
-                    status="success"
+                    echo "success=true" >> $GITHUB_ENV
+                    echo "commit_id=$(git log -1 --pretty=format:"%H" $commit)" >> $GITHUB_ENV
+                    echo "commit_message=$(git log -1 --pretty=format:"%s" $commit | tr ' ' '_')" >> $GITHUB_ENV
                     break
                   fi
                 fi
@@ -141,12 +137,12 @@ jobs:
               if [ "$status" = "success" ]; then
                 break
               fi
-            done < ${{ steps.get_commits.outputs.commits_change_file }}
+            done < $commits_change_file
 
       - name: Checkout to commit having the taget studio version in drawing production repo
         uses: actions/checkout@v2
         with:
-            ref: ${{ steps.check_versions.outputs.commit_id }}
+            ref: $commit_id
             token: ${{ secrets.TOKEN_3 }}
       
       - name: Create new branch from the commit and push it to the drawing production repo
@@ -154,10 +150,10 @@ jobs:
           echo $commit_id
           git fetch --unshallow
           
-          if [ -z "${{ steps.check_messages.outputs.commit_id }}" ]; then
-            branch_name=${{ steps.check_versions.outputs.commit_message }}
+          if [ -z "$commit_id" ]; then
+            branch_name=$commit_message
           else
-            branch_name=${{ steps.check_messages.outputs.commit_message }}
+            branch_name=$commit_message
           fi
           
           git checkout -b $branch_name  
