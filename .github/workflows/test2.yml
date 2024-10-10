@@ -74,15 +74,11 @@
 #         token: ${{ secrets.PAT_KEY }}
 
 
-name: Direct Push to Protected Branch
+name: check paltform version
 
 on:
   workflow_dispatch:
-    secrets:
-      PAT:
-        required: true
-      ACCESS_TOKEN:
-        required: true
+  
 
 jobs:
   update-protected-branch:
@@ -95,19 +91,7 @@ jobs:
 
       - name: Make changes
         run: |
-          echo "Updated content on $(date)" >> test.txt
+          node platform.js
 
-      - shell: pwsh
-        
-        run: |
-          git config --local user.name "Saurabh Talele"
-          git config --local user.email "Saurabh.Talele@bentley.com"
-          git remote remove origin 
-          git remote add origin https://github.com/${{ github.repository }}.git
-          git add .
-          git commit -m "Automated update on $(date)"
-          git push "https://${{secrets.ACCESS_TOKEN}}@github.com/${{ github.repository }}.git" test 
-        env:
-          PAT_TOKEN: ${{ secrets.PAT }}
-
+     
         
