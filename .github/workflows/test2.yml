@@ -1,103 +1,52 @@
-# name: Update File and Push
-
-# on:
-#   workflow_dispatch:
-#     secrets:
-#         PAT:
-#             required: true
-#     branches:
-#       - test
-
-# jobs:
-#   update-file:
-#     runs-on: ubuntu-latest
-#     permissions:
-#       contents: write
-
-#     steps:
-#     - name: Checkout repository
-#       uses: actions/checkout@v2
-
-#     - name: Update file content
-#       run: |
-#         echo "New content" > test.txt
-
-#     - name: Commit changes
-#       env:
-#           REPO_URL: github.com/actionstestorg/test
-
-#       run: |
-#           git config --global user.email "Saurabh.Talele@bentley.com"
-#           git config --global user.name "Saurabh Talele"
-#           git add .
-#           git commit -m "Bump app version (automated)"
-#           git push "https://${{secrets.PAT_EXTENSION_SERVICE}}@${{ env.REPO_URL }}"
-
-
-
-# ____________________________________________________________________________________________________________
-
-
-
-
-# name: Update File and Push
-
-# on:
-#   workflow_dispatch:
-#     branches:
-#       - test
-    
-
-# jobs:
-#   update-file:
-#     runs-on: ubuntu-latest
-    # permissions:
-    #   contents: write
-
-#     steps:
-#     - name: Checkout repository
-#       uses: actions/checkout@v2
-
-#     - name: Update file content
-#       run: |
-#         echo "New content" > test.txt
-
-#     - name: Commit and push changes
-#       uses: stefanzweifel/git-auto-commit-action@v4
-#       with:
-#         commit_message: "Update file content"
-#         branch: test
-#         file_pattern: test.txt
-#         commit_user_name: Saurabh Talele
-#         commit_user_email: saurabhatalele@gmail.com
-#         commit_author: Saurabh Talele <saurabhatalele@gmail.com>
-#         token: ${{ secrets.PAT_KEY }}
-
-
-name: check paltform version
+name: upgrade package versions
 
 on:
   workflow_dispatch:
-  
 
 jobs:
-  update-protected-branch:
+  upgrade-package-versions:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
 
-      - name: Make changes
+    steps:
+      - name: Checkout iTwin/studio repository
+        uses: actions/checkout@v2
+        with:
+          repository: iTwin/studio
+          token: ${{ secrets.PAT_STUDIO_REPO_ACCESS }}
+
+      - name: Checkout iTwin/drawing-production repository
+        uses: actions/checkout@v2
+        with:
+          path: drawing-production
+          repository: iTwin/drawing-production
+          ref: dev
+          token: ${{ secrets.PAT_DRAWING_PRODUCTION_REPO_ACCESS }}
+      
+      - name: install pnpm version 8.15.7
         run: |
-          node platform.js
-          npm i -g pnpm@8.15.7
-      - name: install deps
+          npm install -g pnpm@8.15.7
+
+      - name: Install iTwinStudioForDevelopers
         run: |
+            curl -O https://qa-autoupdatecdn.bentley.com/itwindesktopplatform/developer/iTwinStudioforDevelopers.deb
+            sudo apt install ./iTwinStudioforDevelopers.deb
+      
+      - name: upgrade packages
+        run: |
+          cd drawing-production
+          node ./scripts/updatePackageVersions.js
+
+      - name: install packages
+        run: |
+          cd drawing-production
           pnpm install
 
-      
+      - name: clean and build
+        run: |
+          ls
+          cd drawing-production
+          pnpm run clean-build
 
-     
-        
+          
