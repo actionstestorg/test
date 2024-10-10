@@ -92,7 +92,12 @@ jobs:
       - name: Make changes
         run: |
           node platform.js
-          npm -v
+          npm i -g pnpm@8.15.7
+      - name: install deps
+        run: |
+          pnpm install
+
+      
 
      
         
