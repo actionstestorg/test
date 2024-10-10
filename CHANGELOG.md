@@ -1,8 +1,81 @@
 # Change Log - test-repo-2
 
-<!-- This log was last generated on Thu, 03 Oct 2024 09:58:08 GMT and should not be manually modified. -->
+<!-- This log was last generated on Mon, 07 Oct 2024 11:36:15 GMT and should not be manually modified. -->
 
 <!-- Start content -->
+
+## 2.3.1
+
+Mon, 07 Oct 2024 11:36:15 GMT
+
+### Patches
+
+- change files check (Saurabh.Talele@bentley.com)
+
+## 2.3.0
+
+Mon, 07 Oct 2024 11:31:26 GMT
+
+### Minor changes
+
+- Merge branch 'dev' of https://github.com/actionstestorg/test into dev (Saurabh.Talele@bentley.com)
+
+## 2.2.13
+
+Fri, 04 Oct 2024 07:26:27 GMT
+
+### Patches
+
+- bump (Saurabh.Talele@bentley.com)
+
+## 2.2.12
+
+Fri, 04 Oct 2024 07:16:24 GMT
+
+### Patches
+
+- bump (Saurabh.Talele@bentley.com)
+
+## 2.2.11
+
+Thu, 03 Oct 2024 12:02:52 GMT
+
+### Patches
+
+- 1.0.80 (Saurabh.Talele@bentley.com)
+
+## 2.2.10
+
+Thu, 03 Oct 2024 10:51:37 GMT
+
+### Patches
+
+- 1.0.80 (Saurabh.Talele@bentley.com)
+
+## 2.2.9
+
+Thu, 03 Oct 2024 10:48:34 GMT
+
+### Patches
+
+- 1.0.56 (Saurabh.Talele@bentley.com)
+
+## 2.2.8
+
+Thu, 03 Oct 2024 10:47:57 GMT
+
+### Patches
+
+- test (Saurabh.Talele@bentley.com)
+
+## 2.2.7
+
+Thu, 03 Oct 2024 10:38:41 GMT
+
+### Patches
+
+- update (Saurabh.Talele@bentley.com)
+- update (Saurabh.Talele@bentley.com)
 
 ## 2.2.6
 
