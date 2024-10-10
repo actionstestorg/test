@@ -5,7 +5,7 @@ on:
 
 jobs:
   filter-commits:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     permissions:
       contents: write 
       pull-requests: write
@@ -35,114 +35,110 @@ jobs:
         run: |
             cd drawing-production
             git fetch --unshallow
-            commits_change=$(git log --pretty=format:"%H" -- change/)
-            commits_message=$(git log --pretty=format:"%H" --grep="studio.*[0-9]\+\.[0-9]\+\.[0-9]\+")
+            $commits_change = git log --pretty=format:"%H" -- change/
+            $commits_message = git log --pretty=format:"%H" --grep="studio.*[0-9]\+\.[0-9]\+\.[0-9]\+"
             echo "The commit are"
             echo $commits_change
             echo $commits_message
-            echo "$commits_change" | tr ' ' '\n' > commits_change.txt
+            echo "$commits_change" -split ' ' | Out-File commits_change.txt
             echo "::set-output name=commits_change_file::commits_change.txt"
-            echo "$commits_message" | tr ' ' '\n' > commits_message.txt
+            echo "$commits_message" -split ' ' | Out-File commits_message.txt
             echo "commit message file"
-            cat commits_message.txt
+            Get-Content commits_message.txt
             echo "::set-output name=commits_message_file::commits_message.txt"
 
       - name: check commit messages for version upgrade
         id: check_messages
         run: |
-              current_version=$(jq -r '.version' package.json)
+              $current_version = (Get-Content package.json | ConvertFrom-Json).version
               cd drawing-production
               echo "Reading commits from file:"
-              cat ${{ steps.get_commits.outputs.commits_message_file }}
-              while IFS= read -r commit; do
+              Get-Content ${{ steps.get_commits.outputs.commits_message_file }}
+              foreach ($commit in Get-Content ${{ steps.get_commits.outputs.commits_message_file }}) {
                 echo "Processing commit: $commit"
                 git checkout $commit
-                version=$(git log -1 --pretty=format:"%s" $commit | grep -oP "(\d+\.\d+\.\d+)")
+                $version = (git log -1 --pretty=format:"%s" $commit) -match "(\d+\.\d+\.\d+)" | Out-Null; $matches[0]
                 echo "The version of the commit message is $version $current_version"
-                if [ "$version" \> "$current_version" ]; then
+                if ($version -gt $current_version) {
                   echo "The version of drawing-production repo $version is greater than current studio main version $current_version."
-                elif [ "$version" \< "$current_version" ]; then
+                } elseif ($version -lt $current_version) {
                   echo "The version of drawing-production repo $version is less than current studio main version $current_version. Exiting with issue."
                   break
-                else
+                } else {
                   echo "The version of the commit message $version matches the current studio main version $current_version. $commit"
-                  change_files=$(git show --name-only $commit | grep "change/")
-                  if [ -z "$change_files" ]; then
+                  $change_files = git show --name-only $commit | Select-String "change/"
+                  if (-not $change_files) {
                     echo "No change files found in commit: $commit"
                     break
-                  fi
+                  }
                   echo "The change files are:"
                   echo $change_files
-                  for file in $change_files; do
-                    isVersionUpgrade=$(jq -r '.isStudioVersionUpgrade' "$file")
-                    if [ "$isVersionUpgrade" != "yes" ]; then
+                  foreach ($file in $change_files) {
+                    $isVersionUpgrade = (Get-Content $file | ConvertFrom-Json).isStudioVersionUpgrade
+                    if ($isVersionUpgrade -ne "yes") {
                       echo "The file $file is not a version upgrade. Skipping."
                       break
-                    else
-                      change_file_version=$(jq -r '.targetStudioVersion' "$file")
-                      if [ "$change_file_version" != "$version" ]; then
+                    } else {
+                      $change_file_version = (Get-Content $file | ConvertFrom-Json).targetStudioVersion
+                      if ($change_file_version -ne $version) {
                         echo "The version of the commit message $version does not match the version of the change file $change_file_version. Skipping the commit."
                         break
-                      fi
+                      }
                         echo "Creating PR for commit $commit with version $version."
-                        commit_message=$(git log -1 --pretty=format:"%s" $commit | tr ' ' '_')
-                        sanitized_commit_message=$(echo "$commit_message" | sed 's/(#[0-9]*)//g' | tr ' ' '_')
+                        $commit_message = (git log -1 --pretty=format:"%s" $commit) -replace ' ', '_'
+                        $sanitized_commit_message = $commit_message -replace '\(#\d+\)', '' -replace ' ', '_'
                         echo $sanitized_commit_message
                         echo "::set-output name=commit_message::$sanitized_commit_message"
                         echo "::set-output name=commit_id::$(git log -1 --pretty=format:"%H" $commit)"
                         echo "::set-output name=outcome::success"
-                       
-
-                      break
-                    fi
-                  done
-                fi
-              done < ${{ steps.get_commits.outputs.commits_message_file }}
+                        break
+                    }
+                  }
+                }
+              }
           
-  
       - name: Check change files for target version similar to studio main version
         id: check_versions
         if: steps.check_messages.outputs.outcome != 'success'
         run: |
-            current_version=$(cat packages/framework/package.json | jq -r '.version')
+            $current_version = (Get-Content packages/framework/package.json | ConvertFrom-Json).version
             cd drawing-production
             echo "Reading commits from file:"
-            cat ${{ steps.get_commits.outputs.commits_change_file }}
-            while IFS= read -r commit; do
-              echo "Processing commit: $commit"-
+            Get-Content ${{ steps.get_commits.outputs.commits_change_file }}
+            foreach ($commit in Get-Content ${{ steps.get_commits.outputs.commits_change_file }}) {
+              echo "Processing commit: $commit"
               git checkout $commit
-              change_files=$(git show --name-only $commit | grep "change/")
+              $change_files = git show --name-only $commit | Select-String "change/"
               echo $change_files
-              for file in $change_files; do
+              foreach ($file in $change_files) {
                 echo "Processing file: $file"
-                isVersionUpgrade=$(cat $file | jq -r '.isVersionUpgrade')
-                if [ "$isVersionUpgrade" != "true" ]; then
+                $isVersionUpgrade = (Get-Content $file | ConvertFrom-Json).isVersionUpgrade
+                if ($isVersionUpgrade -ne "true") {
                   echo "The file $file is not a version upgrade. Skipping."
                   continue
-                fi
-                version=$(cat $file | jq -r '.targetStudioVersion')
-  
-                if [ -n "$version" ]; then
-                  if [ "$version" \> "$current_version" ]; then
+                }
+                $version = (Get-Content $file | ConvertFrom-Json).targetStudioVersion
+                if ($version) {
+                  if ($version -gt $current_version) {
                     echo "The version of drawing-production repo $version is greater than current studio main version $current_version."
-                  elif [ "$version" \< "$current_version" ]; then
+                  } elseif ($version -lt $current_version) {
                     echo "The version of drawing-production repo $version is less than current studio main version $current_version. Exiting with issue."
                     exit 1
-                  else
+                  } else {
                     echo "Creating PR for commit $commit with version $version."
-                    echo "::set-output name=commit_message::$(git log -1 --pretty=format:"%s" $commit | tr ' ' '_')"
+                    echo "::set-output name=commit_message::$(git log -1 --pretty=format:"%s" $commit -replace ' ', '_')"
                     echo "::set-output name=commit_id::$(git log -1 --pretty=format:"%H" $commit)"
                     echo "::set-output name=outcome::success"
                     break
-                  fi
-                fi
-              done
-              if [ "$status" = "success" ]; then
+                  }
+                }
+              }
+              if ($status -eq "success") {
                 break
-              fi
-            done < ${{ steps.get_commits.outputs.commits_change_file }}
+              }
+            }
 
-      - name: Checkout to commit having the taget studio version in drawing production repo
+      - name: Checkout to commit having the target studio version in drawing production repo
         if: steps.check_messages.outputs.outcome == 'success' || steps.check_versions.outputs.outcome != 'success'
         uses: actions/checkout@v2
         with:
@@ -154,27 +150,15 @@ jobs:
           echo $commit_id
           git fetch --unshallow
           
-          if [ -z "${{ steps.check_messages.outputs.commit_id }}" ]; then
-            branch_name=${{ steps.check_versions.outputs.commit_message }}
-          else
-            branch_name=${{ steps.check_messages.outputs.commit_message }}
-          fi
+          if (-not ${{ steps.check_messages.outputs.commit_id }}) {
+            $branch_name = ${{ steps.check_versions.outputs.commit_message }}
+          } else {
+            $branch_name = ${{ steps.check_messages.outputs.commit_message }}
+          }
           
           git checkout -b $branch_name  
           git push -u -f origin $branch_name
-        
-      # - name: Get PR number
-      #   id: get_pr
-      #   run: |
-      #       COMMIT_HASH=${{ steps.check_versions.outputs.commit_id }}
-      #       PR_NUMBER=$(gh pr list --state all --json number,commits --jq ".[] | select(.commits[].oid == \"$COMMIT_HASH\") | .number")
-      #       echo "::set-output name=pr_number::$PR_NUMBER"
-      #       echo "PR number is $PR_NUMBER"
-      #   env:
-      #       GITHUB_TOKEN: ${{ secrets.TOKEN_3 }}
 
-        
-        
       - name: Create pull request in drawing-production from dev branch to main branch
         id: create_pr
         uses: repo-sync/pull-request@v2
@@ -185,97 +169,3 @@ jobs:
             github_token: ${{ secrets.TOKEN_3 }}
             pr_title: "PR for merging dev to main: ${{steps.check_versions.outputs.commit_message}}"
             pr_body: "This is an auto generated PR for merging dev to main branch\n The commit message is ${{steps.check_versions.outputs.commit_message}}\nThe commit id is ${{steps.check_versions.outputs.commit_id}} "
-      
-        #   gh_pr_create_output=$(gh pr create --title $commit_message --body "Test PR" --base test --head $commit_message 2>&1)
-
-
-        #   echo "$gh_pr_create_output"
-          
-        #   if echo "$gh_pr_create_output" | grep -q "https://github.com/"; then
-        #     echo "PR is created successfully."
-        #   else
-        #     echo "Failed to create PR."
-        #   fi
-        # env:
-        #   GITHUB_TOKEN: ${{ secrets.TOKEN_3 }}
-
-
-          
-      # - name: Filter commits
-      #   run: |
-      #     cd test
-      #     git fetch --unshallow
-      #     git log --oneline
-      #     git log --pretty=format:"%H %s" | grep -E "[0-9]+\.[0-9]+\.[0-9]+" > filtered_commits.txt
-      #     echo "commits with the version numbers in drawing production repo:"
-      #     cat filtered_commits.txt
-      #     cd ..
-
-      # - name: Set up Node.js
-      #   uses: actions/setup-node@v3
-      #   with:
-      #     node-version: "16"
-
-      # - name: Compare versions
-      #   run: |
-      #     if [ -f package.json ]; then
-      #       echo "package.json exists."
-      #       package_version=$(jq -r '.version' package.json)
-      #       echo "Studio packages/framework Package version: $package_version"
-      #     else
-      #       echo "package.json does not exist in the studio repo."
-      #       exit 1
-      #     fi
-
-      #     while IFS= read -r line; do
-      #       version_string=$(echo "$line" | grep -oP '\d+\.\d+\.\d+')
-      #       echo "Drawing production Commit message version: $version_string"
-
-      #       compare_versions() {
-      #         IFS='.' read -r -a v1_parts <<< "$1"
-      #         IFS='.' read -r -a v2_parts <<< "$2"
-
-      #         for i in "${!v1_parts[@]}"; do
-      #           if [[ "${v1_parts[i]}" -gt "${v2_parts[i]}" ]]; then
-      #             echo "Studio released Package version ($package_version) is greater than commit message version from drawing production repo ($version_string). You need to upgrade your package version."
-      #             exit 1
-      #           elif [[ "${v1_parts[i]}" -lt "${v2_parts[i]}" ]]; then
-      #             echo "The Studio Package version ($package_version) is lesser than commit version from drawing production repo ($version_string)."
-      #             return
-      #           fi
-      #         done
-      #         echo "The studio Package version ($package_version) is the same as commit version in Drawing production repo ($version_string)."
-      #         echo "$line" | grep -oP '^\w+' > commit_hash.txt
-      #         same_version_found=true
-      #       }
-
-      #       compare_versions "$package_version" "$version_string"
-      #         if [ "$same_version_found" = true ]; then
-      #       break
-      #           fi
-      #     done < ./test/filtered_commits.txt
-
-      # - name: cd to test and create pr from commit hash
-      #   run: |
-      #     echo "creating a PR from the commit hash"
-      #     cd test
-      #     commit_hash=$(cat ../commit_hash.txt)
-      #     commit_message=$(grep -w "^$commit_hash" filtered_commits.txt | cut -d' ' -f2- | tr ' ' '_')
-      #     echo "Commit message: $commit_message"
-      #     cat ../commit_hash.txt
-      #     git checkout $(cat ../commit_hash.txt)
-      #     git checkout -b $commit_message
-      #     git push origin $commit_message
-
-      #     gh_pr_create_output=$(gh pr create --title $commit_message --body "Test PR" --base test --head $commit_message 2>&1)
-
-      #     echo "$gh_pr_create_output"
-          
-      #     if echo "$gh_pr_create_output" | grep -q "https://github.com/"; then
-      #       echo "PR is created successfully."
-      #     else
-      #       echo "Failed to create PR."
-      #     fi
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.TOKEN_3 }}
-
