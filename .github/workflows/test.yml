@@ -20,4 +20,9 @@ jobs:
         echo $hello
         echo $GITHUB_ENV
 
+    - name: Checkout iTwin/studio repository
+      if: ${{env.hello == 'hello'}}
+      run: |
+        echo "hello"
+
     
