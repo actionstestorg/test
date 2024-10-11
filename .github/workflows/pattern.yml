@@ -41,11 +41,11 @@ jobs:
             echo $commits_change
             echo $commits_message
             echo "$commits_change" -split ' ' | Out-File commits_change.txt
-            echo "::set-output name=commits_change_file::commits_change.txt"
+            echo "commits_change_file=commits_change.txt" >> $env:GITHUB_ENV
             echo "$commits_message" -split ' ' | Out-File commits_message.txt
             echo "commit message file"
             Get-Content commits_message.txt
-            echo "::set-output name=commits_message_file::commits_message.txt"
+            echo "commits_message_file=commits_message.txt" >> $env:GITHUB_ENV
 
       - name: check commit messages for version upgrade
         id: check_messages
@@ -53,8 +53,8 @@ jobs:
               $current_version = (Get-Content package.json | ConvertFrom-Json).version
               cd drawing-production
               echo "Reading commits from file:"
-              Get-Content ${{ steps.get_commits.outputs.commits_message_file }}
-              foreach ($commit in Get-Content ${{ steps.get_commits.outputs.commits_message_file }}) {
+              Get-Content $env:commits_message_file
+              foreach ($commit in Get-Content $env:commits_message_file) {
                 echo "Processing commit: $commit"
                 git checkout $commit
                 $version = (git log -1 --pretty=format:"%s" $commit) -match "(\d+\.\d+\.\d+)" | Out-Null; $matches[0]
@@ -88,9 +88,9 @@ jobs:
                         $commit_message = (git log -1 --pretty=format:"%s" $commit) -replace ' ', '_'
                         $sanitized_commit_message = $commit_message -replace '\(#\d+\)', '' -replace ' ', '_'
                         echo $sanitized_commit_message
-                        echo "::set-output name=commit_message::$sanitized_commit_message"
-                        echo "::set-output name=commit_id::$(git log -1 --pretty=format:"%H" $commit)"
-                        echo "::set-output name=outcome::success"
+                        echo "commit_message=$sanitized_commit_message" >> $env:GITHUB_ENV
+                        echo "commit_id=$(git log -1 --pretty=format:"%H" $commit)" >> $env:GITHUB_ENV
+                        echo "outcome=success" >> $env:GITHUB_ENV
                         break
                     }
                   }
@@ -99,13 +99,13 @@ jobs:
           
       - name: Check change files for target version similar to studio main version
         id: check_versions
-        if: steps.check_messages.outputs.outcome != 'success'
+        if: env.outcome != 'success'
         run: |
             $current_version = (Get-Content packages/framework/package.json | ConvertFrom-Json).version
             cd drawing-production
             echo "Reading commits from file:"
-            Get-Content ${{ steps.get_commits.outputs.commits_change_file }}
-            foreach ($commit in Get-Content ${{ steps.get_commits.outputs.commits_change_file }}) {
+            Get-Content $env:commits_change_file
+            foreach ($commit in Get-Content $env:commits_change_file) {
               echo "Processing commit: $commit"
               git checkout $commit
               $change_files = git show --name-only $commit | Select-String "change/"
@@ -126,9 +126,9 @@ jobs:
                     exit 1
                   } else {
                     echo "Creating PR for commit $commit with version $version."
-                    echo "::set-output name=commit_message::$(git log -1 --pretty=format:"%s" $commit -replace ' ', '_')"
-                    echo "::set-output name=commit_id::$(git log -1 --pretty=format:"%H" $commit)"
-                    echo "::set-output name=outcome::success"
+                    echo "commit_message=$(git log -1 --pretty=format:"%s" $commit -replace ' ', '_')" >> $env:GITHUB_ENV
+                    echo "commit_id=$(git log -1 --pretty=format:"%H" $commit)" >> $env:GITHUB_ENV
+                    echo "outcome=success" >> $env:GITHUB_ENV
                     break
                   }
                 }
@@ -139,10 +139,10 @@ jobs:
             }
 
       - name: Checkout to commit having the target studio version in drawing production repo
-        if: steps.check_messages.outputs.outcome == 'success' || steps.check_versions.outputs.outcome != 'success'
+        if: env.outcome == 'success'
         uses: actions/checkout@v2
         with:
-            ref: ${{ steps.check_versions.outputs.commit_id }}
+            ref: $env:commit_id
             token: ${{ secrets.TOKEN_3 }}
       
       - name: Create new branch from the commit and push it to the drawing production repo
@@ -150,10 +150,10 @@ jobs:
           echo $commit_id
           git fetch --unshallow
           
-          if (-not ${{ steps.check_messages.outputs.commit_id }}) {
-            $branch_name = ${{ steps.check_versions.outputs.commit_message }}
+          if (-not $env:commit_id) {
+            $branch_name = $env:commit_message
           } else {
-            $branch_name = ${{ steps.check_messages.outputs.commit_message }}
+            $branch_name = $env:commit_message
           }
           
           git checkout -b $branch_name  
@@ -163,9 +163,9 @@ jobs:
         id: create_pr
         uses: repo-sync/pull-request@v2
         with:
-            source_branch: ${{steps.check_versions.outputs.commit_message}}
+            source_branch: $env:commit_message
             destination_branch: main
             pr_label: "merge-dev-to-main"
             github_token: ${{ secrets.TOKEN_3 }}
-            pr_title: "PR for merging dev to main: ${{steps.check_versions.outputs.commit_message}}"
-            pr_body: "This is an auto generated PR for merging dev to main branch\n The commit message is ${{steps.check_versions.outputs.commit_message}}\nThe commit id is ${{steps.check_versions.outputs.commit_id}} "
+            pr_title: "PR for merging dev to main: $env:commit_message"
+            pr_body: "This is an auto generated PR for merging dev to main branch\n The commit message is $env:commit_message\nThe commit id is $env:commit_id"
