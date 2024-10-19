@@ -85,7 +85,7 @@ on:
         required: true
     
     schedule:
-      - cron: '10 17 * * *'
+      - cron: '43 16 * * *'
 
 jobs:
   update-protected-branch:
