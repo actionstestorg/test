@@ -83,6 +83,9 @@ on:
         required: true
       ACCESS_TOKEN:
         required: true
+    
+    schedule:
+      - cron: '48 16 * * *'
 
 jobs:
   update-protected-branch:
