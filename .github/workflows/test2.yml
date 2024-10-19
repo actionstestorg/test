@@ -2,7 +2,7 @@ name: Direct Push to Protected Branch
 
 on:
   schedule:
-    - cron: "0 17 * * *"
+    - cron: "3 17 * * *"
 
 jobs:
   update-protected-branch:
