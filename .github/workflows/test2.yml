@@ -22,10 +22,11 @@ jobs:
           tests=16
           failures=2
     
-          # set them as GitHub ENV variables
-          echo "Tests=$tests" >> $GITHUB_ENV
-          echo "Failures=$failures" >> $GITHUB_ENV
-          echo "$failures out of ${{ env.Tests }} tests failed on CI"
+          if [ $failures == 4]; then
+          echo "Failures: $failures"
+          else
+          echo "Failures: $failures"
+          fi
 
       - name: Create new branch
         run: |
