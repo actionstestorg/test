@@ -26,4 +26,4 @@ jobs:
   
       - name: Create new branch
         run: |
-          echo "$tests"
+          echo "$TESTS"
