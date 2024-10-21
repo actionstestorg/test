@@ -23,7 +23,7 @@ jobs:
           git config --global user.email "saurabhatalele@gmail.com"
           echo "Updated content on $(date)" >> test.txt
           git add .
-          git commit -m "Automated update on $(date)"
+          git commit -m "Automated update on $(date)" --amend --author="Saurabh <daurabhatalele@gmail.com>"
           git push origin ${{github.ref_name}}
 
       - name: Create pull request
