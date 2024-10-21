@@ -18,15 +18,15 @@ jobs:
         
       - name: Set and Retrieve Github ENV variables
         shell: bash
-        run: |
-    
-          # define variables      
+        run: |     
           tests=16
           failures=2
     
           # set them as GitHub ENV variables
           echo "Tests=$tests" >> $GITHUB_ENV
-          echo "Failures=failures" >> $GITHUB_ENV
-    
-          # retrieve these GitHub ENV variables
+          echo "Failures=$failures" >> $GITHUB_ENV
           echo "$failures out of ${{ env.Tests }} tests failed on CI"
+
+      - name: Create new branch
+        run: |
+          echo "${{env.Failures}}"
