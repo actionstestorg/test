@@ -19,4 +19,4 @@ jobs:
       - name: set github env and print
         run: |
           echo "outcome=success" >> $GITHUB_ENV
-          echo ${{env.outcome}}
+          echo "${{env.outcome}} $outcome"
