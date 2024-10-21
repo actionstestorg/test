@@ -23,9 +23,9 @@ jobs:
           failures=2
     
           if [ $failures == 4]; then
-          echo "Failures: $failures"
+          echo "Failures"
           else
-          echo "Failures: $failures"
+          echo "Failures 2"
           fi
 
       - name: Create new branch
