@@ -21,7 +21,7 @@ jobs:
       - name: Create new branch
         run: |
           git config --global user.name "Saurabh Talele"
-          git config --global user.email "Saurabh.Talele@bentley.com"
+          git config --global user.email "saurabhatalele@gmail.com"
           echo "Updated content on $(date)" >> test.txt
           git add .
           git commit -m "Automated update on $(date)"
