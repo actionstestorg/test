@@ -16,7 +16,17 @@ jobs:
       - name: Checkout iTwin/studio repository
         uses: actions/checkout@v4
         
-      - name: set github env and print
+      - name: Set and Retrieve Github ENV variables
+        shell: bash
         run: |
-          echo "outcome=success" >> $GITHUB_ENV
-          echo "${{env.outcome}} outcome is  $outcome"
+    
+          # define variables      
+          tests=16
+          failures=2
+    
+          # set them as GitHub ENV variables
+          echo "Tests=$tests" >> $GITHUB_ENV
+          echo "Failures=$failures" >> $GITHUB_ENV
+    
+          # retrieve these GitHub ENV variables
+          echo "${{ env.Failures }} out of ${{ env.Tests }} tests failed on CI"
