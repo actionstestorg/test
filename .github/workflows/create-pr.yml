@@ -29,13 +29,15 @@ jobs:
       - name: Create pull request
         id: create_pr
         uses: repo-sync/pull-request@v2
+        env:
+          GITHUB_ACTOR: "SaurabhATalele"
         with:
           source_branch: ${{github.ref_name}}
           destination_branch: test
           pr_label: "release"
           github_token: ${{ secrets.TOKEN_3 }}
           pr_title: "Release PR"
-          pr_reviewer: "SaurabhTalele-Bentley"
+      
 
 
       - name: Approve PR
