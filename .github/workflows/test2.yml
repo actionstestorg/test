@@ -22,12 +22,7 @@ jobs:
           tests=16
           failures=2
     
-          if [ $failures = 4 ]; then
-          echo "Failures"
-          else
-          echo "Failures 2"
-          fi
-
+  
       - name: Create new branch
         run: |
-          echo "${{env.Failures}}"
+          echo "$tests"
