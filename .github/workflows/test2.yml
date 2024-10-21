@@ -21,6 +21,7 @@ jobs:
         run: |     
           tests=16
           failures=2
+          echo "TESTS=$tests" >> $GITHUB_ENV
     
   
       - name: Create new branch
