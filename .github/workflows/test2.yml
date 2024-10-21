@@ -2,6 +2,9 @@ name: upgrade package versions
 
 on:
   workflow_dispatch:
+  push:
+      branches:
+        - test4
 
 jobs:
   upgrade-package-versions:
@@ -11,42 +14,9 @@ jobs:
 
     steps:
       - name: Checkout iTwin/studio repository
-        uses: actions/checkout@v2
-        with:
-          repository: iTwin/studio
-          token: ${{ secrets.TOKEN_3 }}
-
-      - name: Checkout iTwin/drawing-production repository
-        uses: actions/checkout@v2
-        with:
-          path: drawing-production
-          repository: iTwin/drawing-production
-          ref: dev
-          token: ${{ secrets.TOKEN_3 }}
-      
-      - name: install pnpm version 8.15.7
+        uses: actions/checkout@v4
+        
+      - name: set github env and print
         run: |
-          npm install -g pnpm@8.15.7
-
-      - name: Install iTwinStudioForDevelopers
-        run: |
-            curl -O https://qa-autoupdatecdn.bentley.com/itwindesktopplatform/developer/iTwinStudioforDevelopers.deb
-            sudo apt install ./iTwinStudioforDevelopers.deb
-      
-      - name: upgrade packages
-        run: |
-          cd drawing-production
-          node ./scripts/updatePackageVersions.js
-
-      - name: install packages
-        run: |
-          cd drawing-production
-          pnpm install
-
-      - name: clean and build
-        run: |
-          ls
-          cd drawing-production
-          pnpm run clean-build
-
-          
+          echo "outcome=success" >> $GITHUB_ENV
+          echo $outcome
