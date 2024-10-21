@@ -33,7 +33,7 @@ jobs:
           source_branch: ${{github.ref_name}}
           destination_branch: test
           pr_label: "release"
-          github_token: ${{ secrets.PAT }}
+          github_token: ${{ secrets.TOKEN_3 }}
           pr_title: "Release PR"
           pr_reviewer: "SaurabhTalele-Bentley"
 
