@@ -33,7 +33,7 @@ jobs:
           GITHUB_ACTOR: "SaurabhATalele"
         with:
           source_branch: ${{github.ref_name}}
-          destination_branch: test
+          destination_branch: main
           pr_label: "release"
           github_token: ${{ secrets.TOKEN_3 }}
           pr_title: "Release PR"
