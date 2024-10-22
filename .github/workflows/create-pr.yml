@@ -26,18 +26,22 @@ jobs:
           git commit -m "Automated update on $(date)" --author="Saurabh <saurabhatalele@gmail.com>"
           git push -f origin ${{github.ref_name}}
 
-      - name: Create pull request
-        id: create_pr
-        uses: repo-sync/pull-request@v2
-        env:
-          GITHUB_ACTOR: "SaurabhATalele"
-        with:
-          source_branch: ${{github.ref_name}}
-          destination_branch: main
-          pr_label: "release"
-          github_token: ${{ secrets.TOKEN_3 }}
-          pr_title: "Release PR"
-          pr_assignee: "SaurabhATalele"
+      - name: create PR
+        run: |
+          gh pr create --title "Release PR" --body "This PR is for the release." --head "${{ github.ref_name }}" --base main --label "release" --repo "actiontestorg/test"
+
+      # - name: Create pull request
+      #   id: create_pr
+      #   uses: repo-sync/pull-request@v2
+      #   env:
+      #     GITHUB_ACTOR: "SaurabhATalele"
+      #   with:
+      #     source_branch: ${{github.ref_name}}
+      #     destination_branch: main
+      #     pr_label: "release"
+      #     github_token: ${{ secrets.TOKEN_3 }}
+      #     pr_title: "Release PR"
+      #     pr_assignee: "SaurabhATalele"
       
 
 
