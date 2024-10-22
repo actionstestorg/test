@@ -29,7 +29,8 @@ jobs:
       - name: create PR
         run: |
           gh pr create --title "Release PR" --body "This PR is for the release." --head "${{ github.ref_name }}" --base main --label "release" --repo "actiontestorg/test"
-
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN_3 }}
       # - name: Create pull request
       #   id: create_pr
       #   uses: repo-sync/pull-request@v2
