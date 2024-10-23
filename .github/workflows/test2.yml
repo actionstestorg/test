@@ -24,4 +24,32 @@ jobs:
         run: echo "PR_NUMBER=$(echo ${GITHUB_REF} | sed 's/refs\/pull\/\([0-9]*\)\/merge/\1/')" >> $GITHUB_ENV
 
       - name: Print PR Number
-        run: echo "The PR number is ${{ env.PR_NUMBER }}"      
+        run: echo "The PR number is ${{ env.PR_NUMBER }}"  
+      
+      - name: Get PR label
+        uses: snnaplab/get-labels-action@v1
+
+      - name: Print PR title
+        if: contains(fromJson(env.LABELS), 'automated pr') != true
+        run: |
+          node ./platform.js
+          echo "SUCCESS='true'" >> $GITHUB_ENV
+          PR_AUTHOR=$(jq -r '.pull_request.user.login' "$GITHUB_EVENT_PATH")
+          rm -rf ./test-results.json
+          git config --global user.name "${PR_AUTHOR}"
+          git config --global user.email "${PR_AUTHOR}@users.noreply.github.com"
+          git add .
+          git commit -m "Automated commit by ${PR_AUTHOR}"
+          git push -u -f origin HEAD:refs/heads/${{ github.head_ref }}
+          
+      - name: Print PR title
+        run: echo ${{env.SUCCESS}}
+
+      - name: Add label to PR
+        if: env.SUCCESS
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+            github_token: ${{ secrets.TOKEN_3 }}
+            labels: 'automated pr'
+            number: ${{ env.PR_NUMBER }}
+       
