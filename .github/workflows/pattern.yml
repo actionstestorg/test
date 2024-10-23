@@ -10,10 +10,6 @@ jobs:
       contents: write 
       pull-requests: write
       actions: write
-    permissions:
-      contents: write 
-      pull-requests: write
-      actions: write
 
     steps:
 
@@ -34,7 +30,6 @@ jobs:
         with:
           node-version: '16'
 
-      - name: Get all commits with change files or commit message to upgrade from drawing-production repo
       - name: Get all commits with change files or commit message to upgrade from drawing-production repo
         id: get_commits
         run: |
