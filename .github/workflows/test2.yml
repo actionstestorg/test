@@ -39,7 +39,7 @@ jobs:
         run: echo ${{env.SUCCESS}}
 
       - name: Add label to PR
-        if: env.SUCCESS == 'true'
+        if: env.SUCCESS == true
         uses: actions-ecosystem/action-add-labels@v1
         with:
             github_token: ${{ secrets.TOKEN_3 }}
