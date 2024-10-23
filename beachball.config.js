@@ -23,7 +23,9 @@ module.exports = {
   changeFilePrompt: {
     changePrompt: (defaultPrompt, pkg) => {
       console.log(defaultPrompt.description.onState.toString());
+      console.log(defaultPrompt.description.onState.toString());
       return [
+        defaultPrompt.changeType,
         defaultPrompt.changeType,
         defaultPrompt.description,
         {
@@ -44,6 +46,7 @@ module.exports = {
         },
 
       ];
+    }
     }
   },
 };

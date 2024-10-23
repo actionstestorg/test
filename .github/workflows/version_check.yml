@@ -1,0 +1,27 @@
+name: Version Check
+
+on:
+  workflow_dispatch:
+
+jobs:
+  filter-commits:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write 
+      pull-requests: write
+      actions: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Download .deb file
+        run: |
+          wget -O iTwinStudioforDevelopers.deb https://autoupdatecdn.bentley.com/itwindesktopplatform/developer/iTwinStudioforDevelopers.deb
+
+      - name: Get .deb Version
+        run: |
+          debPath="iTwinStudioforDevelopers.deb"
+          version=$(dpkg-deb -f "$debPath" Version)
+          echo "DEB Version: $version"
+          echo "deb_version=$version" >> $GITHUB_ENV
