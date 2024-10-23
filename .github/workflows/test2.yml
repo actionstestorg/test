@@ -36,4 +36,10 @@ jobs:
       - name: Print PR title
         if: contains(fromJson(${{env.LABELS}},"automated pr"))
         run: echo "Contains"
+
+      - name: check the file
+        run: |
+          node ./platform.js
+
+          
         

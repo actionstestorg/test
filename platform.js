@@ -1,3 +1,1 @@
-const os = require('os');
-
-console.log(os.platform());
+throw new Error('platform.js is not supported by the current platform');
