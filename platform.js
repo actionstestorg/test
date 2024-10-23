@@ -13,17 +13,24 @@ if (
   results.numPassedTestSuites > 0 &&
   results.success === true
 ) {
-  for (const test in results.testResults) {
+  for (let tests in results.testResults) {
     // eslint-disable-next-line no-console
-    console.log(test.assertionResults?.[0].ancestorTitles);
-    for (const assertionResult in test.assertionResults) {
-      if (assertionResult.status !== "passed") {
+    console.log(results.testResults[tests].assertionResults?.[0].ancestorTitles[0]);
+    for (const assertionResult in results.testResults[tests].assertionResults) {
+      if (results.testResults[tests].assertionResults[assertionResult].status === "passed")
+        {
+            // eslint-disable-next-line no-console
+            console.log(`\tTest passed: ${results.testResults[tests].assertionResults[assertionResult].title}`);
+          }
+        else if (results.testResults[tests].assertionResults[assertionResult].status === "pending") {
         // eslint-disable-next-line no-console
-        console.error(`Test failed: ${assertionResult.fullName}`);
+        console.log(`\tTest skipped: ${results.testResults[tests].assertionResults[assertionResult].title}`);
+        
+      }else
+      {
+        // eslint-disable-next-line no-console
+        console.error(`\tTest failed: ${results.testResults[tests].assertionResults[assertionResult].fullName}`);
         process.exit(1);
-      } else {
-        // eslint-disable-next-line no-console
-        console.log(`Test passed: ${test.fullName}`);
       }
     }
   }
