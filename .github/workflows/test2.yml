@@ -34,8 +34,8 @@ jobs:
         uses: snnaplab/get-labels-action@v1
 
       - name: Print PR title
-        if: contains(fromJson(${{env.LABELS}}),"automated pr") !== true
-        run: echo "Contains"
+        if: contains(fromJson(${{env.LABELS}}),"automated pr")
+        run: echo "Contains ${{ env.LABELS }}"
 
 
 
