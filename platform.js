@@ -15,7 +15,7 @@ if (
 ) {
   for (const test in results.testResults) {
     // eslint-disable-next-line no-console
-    console.log(test.assertionResults[0].ancestorTitles);
+    console.log(test.assertionResults?.[0].ancestorTitles);
     for (const assertionResult in test.assertionResults) {
       if (assertionResult.status !== "passed") {
         // eslint-disable-next-line no-console
