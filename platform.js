@@ -30,7 +30,7 @@ for (let tests in results.testResults) {
       );
     } else {
       // eslint-disable-next-line no-console
-      console.error(
+      console.log(
         `\tTest failed: ${results.testResults[tests].assertionResults[assertionResult].fullName}`
       );
       process.exit(1);
