@@ -18,10 +18,14 @@ jobs:
     steps:
       - name: Checkout iTwin/studio repository
         uses: actions/checkout@v4
-        
-      - name: Set and Retrieve Github ENV variables
-        shell: bash
-        run: echo "PR_NUMBER=$(echo ${GITHUB_REF} | sed 's/refs\/pull\/\([0-9]*\)\/merge/\1/')" >> $GITHUB_ENV
 
-      - name: Print PR Number
-        run: echo "The PR number is ${{ env.PR_NUMBER }}"      
+      - name: Print PR title
+        run: |
+          node ./platform.js
+          PR_AUTHOR=$(jq -r '.pull_request.user.login' "$GITHUB_EVENT_PATH")
+          rm -rf ./test-results.json
+          git config --global user.name "${PR_AUTHOR}"
+          git config --global user.email "${PR_AUTHOR}@users.noreply.github.com"
+          git add .
+          git commit -m "Automated commit by ${PR_AUTHOR}"
+          git push -u -f origin HEAD:refs/heads/${{ github.head_ref }}
