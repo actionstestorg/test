@@ -7,7 +7,6 @@ on:
 jobs:
   create-pull-request:
     runs-on: ubuntu-latest
-    environment: ActionRequired
     permissions:
       contents: write
       pull-requests: write
@@ -21,22 +20,30 @@ jobs:
       - name: Create new branch
         run: |
           git config --global user.name "Saurabh Talele"
-          git config --global user.email "Saurabh.Talele@bentley.com"
+          git config --global user.email "saurabhatalele@gmail.com"
           echo "Updated content on $(date)" >> test.txt
           git add .
-          git commit -m "Automated update on $(date)"
-          git push origin ${{github.ref_name}}
+          git commit -m "Automated update on $(date)" --author="Saurabh <saurabhatalele@gmail.com>"
+          git push -f origin ${{github.ref_name}}
 
-      - name: Create pull request
-        id: create_pr
-        uses: repo-sync/pull-request@v2
-        with:
-          source_branch: ${{github.ref_name}}
-          destination_branch: test
-          pr_label: "release"
-          github_token: ${{ secrets.PAT }}
-          pr_title: "Release PR"
-          pr_reviewer: "SaurabhTalele-Bentley"
+      - name: create PR
+        run: |
+          gh pr create --title "Release PR" --body "This PR is for the release." --head "${{ github.ref_name }}" --base main --label "release" --repo "actionstestorg/test"
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN_3 }}
+      # - name: Create pull request
+      #   id: create_pr
+      #   uses: repo-sync/pull-request@v2
+      #   env:
+      #     GITHUB_ACTOR: "SaurabhATalele"
+      #   with:
+      #     source_branch: ${{github.ref_name}}
+      #     destination_branch: main
+      #     pr_label: "release"
+      #     github_token: ${{ secrets.TOKEN_3 }}
+      #     pr_title: "Release PR"
+      #     pr_assignee: "SaurabhATalele"
+      
 
 
       - name: Approve PR

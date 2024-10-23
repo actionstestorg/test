@@ -1,31 +1,28 @@
-name: Direct Push to Protected Branch
+name: Check PR details
 
 on:
-  schedule:
-    - cron: "*/3 * * * *"
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
 
 jobs:
-  update-protected-branch:
+  check_the_PR_details:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Checkout iTwin/studio repository
+        uses: actions/checkout@v4
+        
+      - name: Set and Retrieve Github ENV variables
+        shell: bash
+        run: echo "PR_NUMBER=$(echo ${GITHUB_REF} | sed 's/refs\/pull\/\([0-9]*\)\/merge/\1/')" >> $GITHUB_ENV
 
-      - name: Make changes
-        run: |
-          echo "Updated content on $(date)" >> test.txt
-
-      - shell: pwsh
-
-        run: |
-          git config --local user.name "Saurabh Talele"
-          git config --local user.email "Saurabh.Talele@bentley.com"
-          git remote remove origin 
-          git remote add origin https://github.com/${{ github.repository }}.git
-          git add .
-          git commit -m "Automated update on $(date)"
-          git push "https://${{secrets.ACCESS_TOKEN}}@github.com/${{ github.repository }}.git" test
-        env:
-          PAT_TOKEN: ${{ secrets.PAT }}
+      - name: Print PR Number
+        run: echo "The PR number is ${{ env.PR_NUMBER }}"     
+          
