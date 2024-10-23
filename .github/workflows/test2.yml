@@ -24,4 +24,6 @@ jobs:
         run: echo "PR_NUMBER=$(echo ${GITHUB_REF} | sed 's/refs\/pull\/\([0-9]*\)\/merge/\1/')" >> $GITHUB_ENV
 
       - name: Print PR Number
-        run: echo "The PR number is ${{ env.PR_NUMBER }}"      
+        run: echo "The PR number is ${{ env.PR_NUMBER }}"    
+        
+        
