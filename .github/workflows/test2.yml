@@ -33,7 +33,7 @@ jobs:
         if: contains(fromJson(env.LABELS), 'automated pr') != true
         run: |
           node ./platform.js
-          echo "$SUCCESS='true'" >> $GITHUB_ENV
+          echo "SUCCESS='true'" >> $GITHUB_ENV
 
       - name: Add label to PR
         if: env.SUCCESS == 'true'
