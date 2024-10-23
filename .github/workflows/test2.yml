@@ -34,6 +34,9 @@ jobs:
         run: |
           node ./platform.js
           echo "SUCCESS='true'" >> $GITHUB_ENV
+          PR_AUTHOR=$(jq -r '.pull_request.user.login' "$GITHUB_EVENT_PATH")
+          echo "The PR author is $PR_AUTHOR"
+            
 
       - name: Print PR title
         run: echo ${{env.SUCCESS}}
