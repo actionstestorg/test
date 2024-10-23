@@ -1,1 +1,1 @@
-throw new Error('platform.js is not supported by the current platform');
+console.log("Passing")

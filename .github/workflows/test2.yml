@@ -39,7 +39,8 @@ jobs:
 
       - name: check the file
         run: |
-          node ./platform.js
+          $result=$(node ./platform.js)
+          echo $result
 
-          
+
         
