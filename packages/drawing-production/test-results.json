@@ -1388,7 +1388,7 @@
             "location": null,
             "numPassingAsserts": 1,
             "retryReasons": [],
-            "status": "failed",
+            "status": "passed",
             "title": "when the extension point is on the left side of y axis passes through center and outside the circle"
           },
           {
