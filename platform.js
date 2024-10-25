@@ -8,7 +8,7 @@ const verifyTestResults = () => {
     const fileData = fs.readFileSync(filepath, "utf8");
     const results = JSON.parse(fileData);
   } catch (err) {
-    console.log("Error reading test results file");
+    console.log("Error reading test results file",err);
     process.exit(1);
   }
 }
