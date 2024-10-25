@@ -61,7 +61,7 @@ jobs:
           echo "  Total suites: $(echo "$RESULTS" | jq -r '.numTotalTestSuites')"
           echo "  Total passed: $(echo "$RESULTS" | jq -r '.numPassedTestSuites')"
         shell: bash
-        working-directory: packages/drawing-production
+        working-directory: test/packages/drawing-production
 
       # - name: Print PR title
       #   run: |
