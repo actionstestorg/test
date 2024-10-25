@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require("path");
 
 const filepath = path.join(__dirname, "test-results.json");
+console.log(filepath)
 
 const data = fs.readFileSync(filepath, "utf8");
 const results = JSON.parse(data);
@@ -31,7 +32,7 @@ for (let tests in results.testResults) {
     } else {
       // eslint-disable-next-line no-console
       console.log(
-        `\tTest failed: ${results.testResults[tests].assertionResults[assertionResult].fullName}`
+        `\tTest failed: ${results.testResults[tests].assertionResults[assertionResult].title}`
       );
       process.exit(1);
     }
