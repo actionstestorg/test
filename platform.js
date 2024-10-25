@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require("path");
 
 const verifyTestResults = () => {
-  const filepath = path.join(__dirname, "packages", "drawing-production", "test-results.json");
+  const filepath = path.join( "./packages", "drawing-production", "test-results.json");
   
   try {
     const fileData = fs.readFileSync(filepath, "utf8");
