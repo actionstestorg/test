@@ -8,7 +8,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "change": "beachball change",
-    "bump": "beachball bump"
+    "bump": "beachball bump",
+    "run-build": "node run-build.js"
   },
   "author": "",
   "license": "ISC",
