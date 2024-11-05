@@ -1,7 +1,7 @@
 const { exec } = require("child_process");
 
 const v8 = require("v8");
-const buildCommand = "pnpm change";
+const buildCommand = "pnpm list";
 
 const child = exec(buildCommand, (error, stdout, stderr) => {
   if (error) {
