@@ -31,5 +31,5 @@ jobs:
 
       - name: Build
         run: |
-          output=$(pnpm run-build)
-          echo "$output" | head -n 5
+          pnpm run-build
+          
