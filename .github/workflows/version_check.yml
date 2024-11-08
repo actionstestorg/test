@@ -5,23 +5,28 @@ on:
 
 jobs:
   filter-commits:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     permissions:
       contents: write 
       pull-requests: write
       actions: write
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Download .deb file
+      - name: Get the installer version from change files
         run: |
-          wget -O iTwinStudioforDevelopers.deb https://autoupdatecdn.bentley.com/itwindesktopplatform/developer/iTwinStudioforDevelopers.deb
-
-      - name: Get .deb Version
+          $commit = git log -1 --pretty=format:"%H"
+          $change_files = git show --name-only $commit | Select-String -Pattern "change/"
+          for ($i = 0; $i -lt $change_files.Length; $i++) {
+            $file = $change_files[$i]
+            $isVersionUpgrade = (Get-Content $file | ConvertFrom-Json).isStudioVersionUpgrade
+            if ($isVersionUpgrade -eq "yes") {
+              $version = (Get-Content $file | ConvertFrom-Json).targetStudioVersion
+              echo "VERSION=$version" >> $env:GITHUB_ENV
+              }
+            }
+          }
+      
+      - name : print details
         run: |
-          debPath="iTwinStudioforDevelopers.deb"
-          version=$(dpkg-deb -f "$debPath" Version)
-          echo "DEB Version: $version"
-          echo "deb_version=$version" >> $GITHUB_ENV
+          $VERSION2 = "${{ env.VERSION }}"
+          echo "Version: $VERSION2"
