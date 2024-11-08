@@ -15,17 +15,15 @@ jobs:
       - name: Get the installer version from change files
         shell: pwsh
         run: |
-          $commit = git log -1 --pretty=format:"%H"
-          $change_files = git show --name-only $commit | Select-String -Pattern "change/"
-          for ($i = 0; $i -lt $change_files.Length; $i++) {
-            $file = $change_files[$i]
-            $isVersionUpgrade = (Get-Content $file | ConvertFrom-Json).isStudioVersionUpgrade
-            if ($isVersionUpgrade -eq "yes") {
-              $version = (Get-Content $file | ConvertFrom-Json).targetStudioVersion
-              echo "VERSION=$version" >> $env:GITHUB_ENV
-              }
+            $commit = git log -1 --pretty=format:"%H"
+            $change_files = git show --name-only $commit | Select-String -Pattern "change/"
+            foreach ($file in $change_files) {
+                $content = Get-Content $file | ConvertFrom-Json
+                if ($content.isStudioVersionUpgrade -eq "yes") {
+                    $version = $content.targetStudioVersion
+                    echo "VERSION=$version" >> $env:GITHUB_ENV
+                }
             }
-          }
       
       - name : print details
         run: |
