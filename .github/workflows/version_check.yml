@@ -12,6 +12,9 @@ jobs:
       actions: write
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Get the installer version from change files
         shell: pwsh
         run: |
