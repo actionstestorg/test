@@ -39,16 +39,23 @@ jobs:
                 git checkout $commit_hash
                 echo "Checking 1 commit $commit_hash"
                 if [ -f pnpm-workspace.yaml ]; then
-                  echo "Checking commit $commit_hash"
-                  yq e '.catalogs.hoisted' pnpm-workspace.yaml | while read package version; do
-                    major=$(echo $version | cut -d. -f1)
-                    minor=$(echo $version | cut -d. -f2)
-                    if [ $major -eq $MAJOR ] && [ $minor -eq $MINOR ]; then
-                      echo "Found $package with version $version"
-                      node .\scripts\updatePackageVersions.js
-                      break
-                    fi
-                  done
-                fi
+                echo "Checking commit $commit_hash"
+                echo "Expected MAJOR: $MAJOR, MINOR: $MINOR"
+                yq e '.catalogs.hoisted' pnpm-workspace.yaml | while read -r package version; do
+                  # Remove quotes if present
+                  version=$(echo "$version" | sed 's/"//g')
+                  # Extract major and minor versions
+                  major=$(echo "$version" | cut -d. -f1)
+                  minor=$(echo "$version" | cut -d. -f2)
+                  echo "Parsed major: $major, minor: $minor"
+                  if [ "$major" -eq "$MAJOR" ] && [ "$minor" -eq "$MINOR" ]; then
+                    echo "Found $package with version $version"
+                    break
+                  fi
+                done
+              fi
               done 
           
+
+
+           
