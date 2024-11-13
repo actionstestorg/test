@@ -53,7 +53,8 @@ jobs:
                     status=success
                     break
                   fi
-                  if [ "$status" != "success" ]; then
+                  if [ "$status" eq "success" ]; then
+                    echo "No package found with MAJOR: $MAJOR, MINOR: $MINOR"
                     node ./scripts/updatePackageVersions.js
                     break
                   fi
