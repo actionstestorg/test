@@ -38,7 +38,7 @@ jobs:
               git rev-list --all | while read commit_hash; do
                 git checkout $commit_hash
                 echo "Checking 1 commit $commit_hash"
-                if [ -f pnpm-workspace.yml ]; then
+                if [ -f pnpm-workspace.yaml ]; then
                   echo "Checking commit $commit_hash"
                   yq e '.catalogs.hoisted' pnpm-workspace.yml | while read package version; do
                     major=$(echo $version | cut -d. -f1)
