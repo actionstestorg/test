@@ -17,7 +17,8 @@ jobs:
 
       - name: Get the installer version from change files
         run: |
-            version=$(jq -r '.[0]' hoist-versions.json | cut -d '"' -f 4)
+            JSON_FILE="hoist-versions.json"
+            version=$(jq -r 'to_entries | .[0].value' "$JSON_FILE")
             major=$(echo $version | cut -d. -f1)
             minor=$(echo $version | cut -d. -f2)
             echo "Major version: $major"
