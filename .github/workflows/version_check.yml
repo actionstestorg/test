@@ -40,7 +40,7 @@ jobs:
                 echo "Checking 1 commit $commit_hash"
                 if [ -f pnpm-workspace.yaml ]; then
                   echo "Checking commit $commit_hash"
-                  yq e '.catalogs.hoisted' pnpm-workspace.yml | while read package version; do
+                  yq e '.catalogs.hoisted' pnpm-workspace.yaml | while read package version; do
                     major=$(echo $version | cut -d. -f1)
                     minor=$(echo $version | cut -d. -f2)
                     if [ $major -eq $MAJOR ] && [ $minor -eq $MINOR ]; then
