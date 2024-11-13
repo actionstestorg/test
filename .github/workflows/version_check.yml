@@ -55,6 +55,7 @@ jobs:
                   fi
                   if [ "$status" != "success" ]; then
                     node ./scripts/updatePackageVersions.js
+                    break
                   fi
                 done
               fi
