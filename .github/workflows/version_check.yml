@@ -21,6 +21,24 @@ jobs:
             version=$(jq -r 'to_entries | .[0].value' "$JSON_FILE")
             major=$(echo $version | cut -d. -f1)
             minor=$(echo $version | cut -d. -f2)
+            echo "Version: $version" 
             echo "Major version: $major"
             echo "Minor version: $minor"
+
+      - name: create release branch
+        working-directory: drawing-production
+        run: |
+              set -e 
+              git fetch --unshallow 
+              git rev-list --all | while read commit_hash; do
+                git checkout $commit_hash
+                if [ -f pnpm-workspace.yml ]; then
+                  echo "Checking commit $commit_hash"
+                  yq e '.catalogs.hoisted' pnpm-workspace.yml | while read package version; do
+                    major=$(echo $version | cut -d. -f1)
+                    minor=$(echo $version | cut -d. -f2)
+                    echo "Package: $package, Major: $major, Minor: $minor"
+                  done
+                fi
+              done 
           
