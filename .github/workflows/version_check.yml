@@ -26,7 +26,6 @@ jobs:
             echo "Minor version: $minor"
 
       - name: create release branch
-        working-directory: drawing-production
         run: |
               set -e 
               git fetch --unshallow 
