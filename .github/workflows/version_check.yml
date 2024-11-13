@@ -22,8 +22,9 @@ jobs:
             major=$(echo $version | cut -d. -f1)
             minor=$(echo $version | cut -d. -f2)
             echo "Version: $version" 
-            echo "Major version: $major"
-            echo "Minor version: $minor"
+            echo "MAJOR=$major" >> $GITHUB_ENV
+            echo "MINOR=$minor" >> $GITHUB_ENV
+            echo "VERSION=$version" >> $GITHUB_ENV
 
       - name: create release branch
         run: |
@@ -36,7 +37,10 @@ jobs:
                   yq e '.catalogs.hoisted' pnpm-workspace.yml | while read package version; do
                     major=$(echo $version | cut -d. -f1)
                     minor=$(echo $version | cut -d. -f2)
-                    echo "Package: $package, Major: $major, Minor: $minor"
+                    if [ $major -eq $MAJOR ] && [ $minor -eq $MINOR ]; then
+                      echo "Found $package with version $version"
+                    
+                    fi
                   done
                 fi
               done 
