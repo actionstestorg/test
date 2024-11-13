@@ -5,7 +5,7 @@ on:
 
 jobs:
   filter-commits:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     permissions:
       contents: write 
       pull-requests: write
@@ -16,19 +16,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Get the installer version from change files
-        shell: pwsh
         run: |
-            $commit = git log -1 --pretty=format:"%H"
-            $change_files = git show --name-only $commit | Select-String -Pattern "change/"
-            foreach ($file in $change_files) {
-                $content = Get-Content $file | ConvertFrom-Json
-                if ($content.isStudioVersionUpgrade -eq "yes") {
-                    $version = $content.targetStudioVersion
-                    echo "VERSION=$version" >> $env:GITHUB_ENV
-                }
-            }
-      
-      - name : print details
-        run: |
-          $VERSION2 = "${{ env.VERSION }}"
-          echo "Version: $VERSION2"
+            version=$(jq -r '.[0]' hoist-versions.json | cut -d '"' -f 4)
+            major=$(echo $version | cut -d. -f1)
+            minor=$(echo $version | cut -d. -f2)
+            echo "Major version: $major"
+            echo "Minor version: $minor"
+          
