@@ -44,24 +44,22 @@ jobs:
                 echo "Expected MAJOR: $MAJOR, MINOR: $MINOR"
                 status="failure"
                 yq e '.catalogs.hoisted' pnpm-workspace.yaml | while read -r package version; do
-                  # Remove quotes if present
                   version=$(echo "$version" | sed 's/"//g')
-                  # Extract major and minor versions
-                  major=$(echo "$version" | cut -d. -f1)
-                  minor=$(echo "$version" | cut -d. -f2)
-                  echo "Parsed major: $major, minor: $minor"
-                  if [ "$major" -eq "$MAJOR" ] && [ "$minor" -eq "$MINOR" ]; then
+                  commit_major=$(echo "$version" | cut -d. -f1)
+                  commit_minor=$(echo "$version" | cut -d. -f2)
+                  if [ "$commit_major" -eq "$MAJOR" ] && [ "$commit_minor" -eq "$MINOR" ]; then
                     echo "Found $package with version $version"
                     status="success"
                     echo $status
                     break
                   fi
                 done
-                fi
+                
                 echo $status
                 if [ "$status" = "success" ]; then
                   echo "Found a package with the expected version"
                   break
+                fi
                 fi
               done 
           
