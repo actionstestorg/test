@@ -34,32 +34,30 @@ jobs:
       - name: create release branch
         run: |
               set -e 
-              
               git fetch --unshallow 
               git rev-list --all | while read commit_hash; do
                 git checkout $commit_hash
                 echo "Checking 1 commit $commit_hash"
                 if [ -f pnpm-workspace.yaml ]; then
-                echo "Checking commit $commit_hash"
-                echo "Expected MAJOR: $MAJOR, MINOR: $MINOR"
-                status="failure"
-                yq e '.catalogs.hoisted' pnpm-workspace.yaml | while read -r package version; do
-                  version=$(echo "$version" | sed 's/"//g')
-                  commit_major=$(echo "$version" | cut -d. -f1)
-                  commit_minor=$(echo "$version" | cut -d. -f2)
-                  if [ "$commit_major" -eq "$MAJOR" ] && [ "$commit_minor" -eq "$MINOR" ]; then
-                    echo "Found $package with version $version"
-                    status="success"
-                    echo $status
+                  echo "Checking commit $commit_hash"
+                  echo "Expected MAJOR: $MAJOR, MINOR: $MINOR"
+                  yq e '.catalogs.hoisted' pnpm-workspace.yaml | while read -r package version; do
+                    version=$(echo "$version" | sed 's/"//g')
+                    commit_major=$(echo "$version" | cut -d. -f1)
+                    commit_minor=$(echo "$version" | cut -d. -f2)
+                    if [ "$commit_major" -eq "$MAJOR" ] && [ "$commit_minor" -eq "$MINOR" ]; then
+                      echo "Found $package with version $version"
+                      node scripts/updatePackageVersions.js 
+                      exit 0
+                      break
+                    fi
+                  done
+                  
+                  echo $status
+                  if [ "$status" = "success" ]; then
+                    echo "Found a package with the expected version"
                     break
                   fi
-                done
-                
-                echo $status
-                if [ "$status" = "success" ]; then
-                  echo "Found a package with the expected version"
-                  break
-                fi
                 fi
               done 
           
