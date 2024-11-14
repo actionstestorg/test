@@ -34,12 +34,8 @@ jobs:
       - name: create release branch
         run: |
               set -e 
-              git fetch --unshallow 
-          
-              git rev-list --all | while read commit_hash; do
-                git checkout $commit_hash
-                echo "Checking 1 commit $commit_hash"
-                if [ -f pnpm-workspace.yaml ]; then
+              check_version() {
+              if [ -f pnpm-workspace.yaml ]; then
                   echo "Checking commit $commit_hash"
                   echo "Expected MAJOR: $MAJOR, MINOR: $MINOR"
                   yq e '.catalogs.hoisted' pnpm-workspace.yaml | while read -r package version; do
@@ -48,9 +44,21 @@ jobs:
                     commit_minor=$(echo "$version" | cut -d. -f2)
                     if [ "$commit_major" -eq "$MAJOR" ] && [ "$commit_minor" -eq "$MINOR" ]; then
                       echo "Found $package with version $version"
-                      exit 0
+                      return 0
                     fi
                   done
+                fi
+                return 1
+              }
+              git fetch --unshallow 
+          
+              git rev-list --all | while read commit_hash; do
+                git checkout $commit_hash
+                echo "Checking 1 commit $commit_hash"
+                result=$(check_version)
+                if [ "$result" -eq 0 ]; then
+                  echo "Found commit $commit_hash"
+                  break
                 fi
               done
           
