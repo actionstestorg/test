@@ -35,6 +35,8 @@ jobs:
         run: |
               set -e 
               git fetch --unshallow 
+              found=false
+
               git rev-list --all | while read commit_hash; do
                 git checkout $commit_hash
                 echo "Checking 1 commit $commit_hash"
@@ -47,14 +49,21 @@ jobs:
                     commit_minor=$(echo "$version" | cut -d. -f2)
                     if [ "$commit_major" -eq "$MAJOR" ] && [ "$commit_minor" -eq "$MINOR" ]; then
                       echo "Found $package with version $version"
-                      npm install
-                      node ./scripts/ReleaseUpdate.js ./hoist-versions.json
-                      exit 0
+                      found=true
                       break
                     fi
                   done
+                  if [ "$found" = true ]; then
+                    break
+                  fi
                 fi
-              done 
+              done
+
+              if [ "$found" = true ]; then
+                exit 0
+              else
+                exit 1
+              fi
           
 
 
