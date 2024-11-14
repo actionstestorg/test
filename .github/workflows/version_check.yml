@@ -54,11 +54,11 @@ jobs:
                     break
                   fi
                 done
+                fi
                 if [ "$status" = "success" ]; then
                   echo "Found a package with the expected version"
                   break
                 fi
-              fi
               done 
           
 
