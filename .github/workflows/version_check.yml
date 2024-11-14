@@ -72,7 +72,7 @@ jobs:
       - name: Update versions in pnpm-workspace.yaml
         run: |
           set -e
-          node scripts/hoist-versions.js 
+          node scripts/ReleaseUpdate.js ./hoist-versions.json
           git commit -a -m "Update versions in pnpm-workspace.yaml"
           git push origin release/$VERSION
 
