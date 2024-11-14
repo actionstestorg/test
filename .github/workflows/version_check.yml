@@ -81,7 +81,7 @@ jobs:
       - name: Create pull request
         uses: repo-sync/pull-request@v2
         with:
-          github_token: ${{ secrets.TOKEN_3 }}
+          github_token: ${{ secrets.PAT }}
           source_branch: release/${{env.VERSION}}
           destination_branch: Test_6
           pr_title: "Update versions in pnpm-workspace.yaml"
