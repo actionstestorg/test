@@ -35,7 +35,7 @@ jobs:
         run: |
               set -e 
               check_version() {
-              if [ -f pnpm-workspace.yaml ]; then
+                if [ -f pnpm-workspace.yaml ]; then
                   yq e '.catalogs.hoisted' pnpm-workspace.yaml | while read -r package version; do
                     version=$(echo "$version" | sed 's/"//g')
                     commit_major=$(echo "$version" | cut -d. -f1)
@@ -48,18 +48,16 @@ jobs:
                 fi
                 return 1
               }
+          
               git fetch --unshallow 
           
               git rev-list --all | while read commit_hash; do
                 git checkout $commit_hash
-                echo "Checking 1 commit $commit_hash"
-                result=$(check_version)
-                if [ "$result" -eq "Found" ]; then
+                echo "Checking commit $commit_hash"
+                if check_version; then
                   echo "Found commit $commit_hash"
                   break
                 fi
               done
-          
-
 
            
