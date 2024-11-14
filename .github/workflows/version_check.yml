@@ -48,8 +48,7 @@ jobs:
                     commit_minor=$(echo "$version" | cut -d. -f2)
                     if [ "$commit_major" -eq "$MAJOR" ] && [ "$commit_minor" -eq "$MINOR" ]; then
                       echo "Found $package with version $version"
-                      found=true
-                      break 2
+                      exit 0
                     fi
                   done
                 fi
