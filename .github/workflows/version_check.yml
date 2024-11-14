@@ -34,6 +34,7 @@ jobs:
       - name: create release branch
         run: |
               set -e 
+              status="failure"
               git fetch --unshallow 
               git rev-list --all | while read commit_hash; do
                 git checkout $commit_hash
