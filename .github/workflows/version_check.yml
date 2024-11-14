@@ -73,13 +73,15 @@ jobs:
         run: |
           set -e
           node scripts/ReleaseUpdate.js ./hoist-versions.json
+          git config user.name "Saurabh Talele"
+          git config user.email "Saurabh.Talele@bentley.com"
           git commit -a -m "Update versions in pnpm-workspace.yaml"
           git push origin release/$VERSION
 
       - name: Create pull request
         uses: repo-sync/pull-request@v2
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.TOKEN_3 }}
           source_branch: release/$VERSION
           destination_branch: main
           pr_title: "Update versions in pnpm-workspace.yaml"
