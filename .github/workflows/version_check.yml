@@ -82,8 +82,8 @@ jobs:
         uses: repo-sync/pull-request@v2
         with:
           github_token: ${{ secrets.TOKEN_3 }}
-          source_branch: release/$VERSION
-          destination_branch: main
+          source_branch: release/${{env.VERSION}}
+          destination_branch: Test_6
           pr_title: "Update versions in pnpm-workspace.yaml"
           pr_body: "This PR updates the versions in pnpm-workspace.yaml"
           pr_label: "dependencies"
