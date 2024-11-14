@@ -164,7 +164,7 @@ function detectPlatform() {
       break;
     case "linux":
       // Untested yet but path is correct
-      studioHoistVersionsPath = "/opt/iTwin Studio for Developers/resources/app/hoist-versions.json";
+      studioHoistVersionsPath = "./hoist-versions.json";
       break;
     default:
       throw new Error(`Running on an unsupported platform: ${platform}`);
