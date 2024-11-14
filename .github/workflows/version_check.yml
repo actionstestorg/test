@@ -42,11 +42,11 @@ jobs:
                     commit_minor=$(echo "$version" | cut -d. -f2)
                     if [ "$commit_major" -eq "$MAJOR" ] && [ "$commit_minor" -eq "$MINOR" ]; then
                       echo "Found"
-                      return 0
+                      return 1
                     fi
                   done
                 fi
-                return 1
+                return 0
               }
           
               git fetch --unshallow 
