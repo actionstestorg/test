@@ -12,7 +12,7 @@ const pnpmWorkspaceYamlPath = path.join(__dirname, "..", "./pnpm-workspace.yaml"
 
 detectPlatform();
 
-const updatePnpmWorkspaceYaml = async () => {
+export const updatePnpmWorkspaceYaml = async (studioHoistVersionsPath) => {
   try {
     const { studioDependencies, pnpmWorkspaceYaml } = await read(studioHoistVersionsPath, pnpmWorkspaceYamlPath);
     const updatedPnpmWorkspaceYaml = await compare(studioDependencies, pnpmWorkspaceYaml);
@@ -26,7 +26,7 @@ const updatePnpmWorkspaceYaml = async () => {
   }
 };
 
-updatePnpmWorkspaceYaml();
+updatePnpmWorkspaceYaml(studioHoistVersionsPath);
 
 /**
  * Reads the contents of the studioHoistVersionsPath and packageJsonPath files and returns them as objects.

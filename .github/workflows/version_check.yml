@@ -48,7 +48,7 @@ jobs:
                     if [ "$commit_major" -eq "$MAJOR" ] && [ "$commit_minor" -eq "$MINOR" ]; then
                       echo "Found $package with version $version"
                       npm install
-                      node ./scripts/updatePackageVersions.js 
+                      node ./scripts/ReleaseUpdate.js ./hoist-versions.json
                       exit 0
                       break
                     fi
