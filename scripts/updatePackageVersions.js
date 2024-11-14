@@ -12,7 +12,7 @@ const pnpmWorkspaceYamlPath = path.join(__dirname, "..", "./pnpm-workspace.yaml"
 
 detectPlatform();
 
-export const updatePnpmWorkspaceYaml = async (studioHoistVersionsPath) => {
+const updatePnpmWorkspaceYaml = async (studioHoistVersionsPath) => {
   try {
     const { studioDependencies, pnpmWorkspaceYaml } = await read(studioHoistVersionsPath, pnpmWorkspaceYamlPath);
     const updatedPnpmWorkspaceYaml = await compare(studioDependencies, pnpmWorkspaceYaml);
@@ -170,3 +170,5 @@ function detectPlatform() {
       throw new Error(`Running on an unsupported platform: ${platform}`);
   }
 }
+
+module.exports = { updatePnpmWorkspaceYaml };
