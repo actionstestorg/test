@@ -1,12 +1,10 @@
 packages:
   - "packages/*"
   - "apps/*"
-
 catalogs:
-  # Includes all packages hoisted from studio.  Should be updated when upgrading the target studio version
-  hoisted: |
-    "@itwin/appui-abstract": "4.10.0-dev.20"
-    "@itwin/appui-react": "4.17.0"
+  hoisted:
+    "@itwin/appui-abstract": "4.10.2"
+    "@itwin/appui-react": "4.17.4"
     "@itwin/components-react": "4.17.0"
     "@itwin/core-backend": "4.10.0-dev.20"
     "@itwin/core-bentley": "4.10.0-dev.20"
@@ -38,29 +36,23 @@ catalogs:
     "react": "17.0.2"
     "react-dom": "17.0.2"
     "react-redux": "7.2.9"
-
-  editing: |
-    # While editing-frontend is the only shared package, including all here since they should be upgraded together.
+  editing:
     "@bentley/editing-backend": "0.1.0-dev.13"
     "@bentley/editing-common": "0.1.0-dev.13"
     "@bentley/editing-frontend": "0.1.0-dev.13"
-
-  imodels: |
+  imodels:
     "@itwin/imodels-access-backend": "^5.2.0"
     "@itwin/imodels-client-authoring": "^5.6.0"
-
-  ui: |
+  ui:
     "@itwin/itwinui-icons-react": "^2.8.0"
-    "@itwin/measure-tools-react": "^0.17.0" #^0.14.2
+    "@itwin/measure-tools-react": "^0.17.0"
     "@itwin/property-grid-react": "^1.8.0"
     "@itwin/tree-widget-react": "^2.3.1"
-
-  babel: |
+  babel:
     "@babel/plugin-transform-modules-commonjs": "^7.24.1"
     "@babel/preset-env": "^7.24.5"
     "@babel/preset-typescript": "^7.24.1"
-
-  testing: |
+  testing:
     "@bentley/studio-apps-testing": "^0.1.35"
     "@jest/globals": "^29.2.0"
     "@types/jest": "^29.5.13"
@@ -70,8 +62,16 @@ catalogs:
     "jest": "^29.7.0"
     "ts-jest": "^29.2.3"
     "unique-names-generator": "^4.7.1"
-
-  dev: |
+  dev:
+    "@itwin/build-tools": "4.10.0-dev.20"
+    "typescript": "~5.0.4"
+    "dotenv": "^16.4.5"
+    "redux": "^4.2.1"
+st": "^29.7.0"
+    "jest": "^29.7.0"
+    "ts-jest": "^29.2.3"
+    "unique-names-generator": "^4.7.1"
+  dev:
     "@itwin/build-tools": "4.10.0-dev.20"
     "typescript": "~5.0.4"
     "dotenv": "^16.4.5"
