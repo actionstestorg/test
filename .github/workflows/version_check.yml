@@ -50,9 +50,14 @@ jobs:
                   echo "Parsed major: $major, minor: $minor"
                   if [ "$major" -eq "$MAJOR" ] && [ "$minor" -eq "$MINOR" ]; then
                     echo "Found $package with version $version"
+                    status=success
                     break
                   fi
                 done
+                if [ "$status" = "success" ]; then
+                  echo "Found a package with the expected version"
+                  break
+                fi
               fi
               done 
           
