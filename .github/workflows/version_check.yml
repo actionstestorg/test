@@ -47,17 +47,12 @@ jobs:
                     commit_minor=$(echo "$version" | cut -d. -f2)
                     if [ "$commit_major" -eq "$MAJOR" ] && [ "$commit_minor" -eq "$MINOR" ]; then
                       echo "Found $package with version $version"
-                      node scripts/updatePackageVersions.js 
+                      npm install
+                      node ./scripts/updatePackageVersions.js 
                       exit 0
                       break
                     fi
                   done
-                  
-                  echo $status
-                  if [ "$status" = "success" ]; then
-                    echo "Found a package with the expected version"
-                    break
-                  fi
                 fi
               done 
           
