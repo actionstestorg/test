@@ -35,8 +35,7 @@ jobs:
         run: |
               set -e 
               git fetch --unshallow 
-              found=false
-
+          
               git rev-list --all | while read commit_hash; do
                 git checkout $commit_hash
                 echo "Checking 1 commit $commit_hash"
@@ -50,20 +49,11 @@ jobs:
                     if [ "$commit_major" -eq "$MAJOR" ] && [ "$commit_minor" -eq "$MINOR" ]; then
                       echo "Found $package with version $version"
                       found=true
-                      break
+                      break 2
                     fi
                   done
-                  if [ "$found" = true ]; then
-                    break
-                  fi
                 fi
               done
-
-              if [ "$found" = true ]; then
-                exit 0
-              else
-                exit 1
-              fi
           
 
 
