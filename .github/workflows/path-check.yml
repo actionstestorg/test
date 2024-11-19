@@ -1,0 +1,38 @@
+name: Run e2e tests
+
+on:
+  push:
+    branches: ["test5"]
+
+jobs:
+  e2e-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      
+
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4.0.2
+        with:
+          node-version: 20.x
+
+     
+
+      # - name: install dependencies
+      #   run: pnpm install
+
+      # - name: Build
+      #   run: pnpm build
+
+      - name: Install iTwinStudioForDevelopers
+        run: |
+          curl -O https://qa-autoupdatecdn.bentley.com/itwindesktopplatform/developer-prerelease/iTwinStudioforDevelopers.deb
+          sudo apt install ./iTwinStudioforDevelopers.deb
+  
+      
+      - name: Run e2e tests
+        working-directory: apps/dp-test-app
+        run: 
+          ls "/opt/iTwin Studio for Developers/"
