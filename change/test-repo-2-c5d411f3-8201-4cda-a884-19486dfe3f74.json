@@ -2,7 +2,7 @@
   "type": "patch",
   "comment": "a",
   "isStudioVersionUpgrade": "yes",
-  "targetStudioVersion": "1.0.81",
+  "targetStudioVersion": "1.0.87",
   "packageName": "test-repo-2",
   "email": "Saurabh.Talele@bentley.com",
   "dependentChangeType": "patch"
