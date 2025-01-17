@@ -1,27 +1,70 @@
-name: Check PR details
+name: Verify tests for the PR
 
 on:
   pull_request:
-    branches:
-      - main
-    types:
-      - opened
-      - synchronize
-      - reopened
+    branches: [main]
+    types: [opened, synchronize]
 
 jobs:
-  check_the_PR_details:
+  verfiy_tests:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
 
     steps:
-      - name: Checkout iTwin/studio repository
+      - name: checkout to repo
         uses: actions/checkout@v4
-        
-      - name: Set and Retrieve Github ENV variables
-        shell: bash
-        run: echo "PR_NUMBER=$(echo ${GITHUB_REF} | sed 's/refs\/pull\/\([0-9]*\)\/merge/\1/')" >> $GITHUB_ENV
 
-      - name: Print PR Number
-        run: echo "The PR number is ${{ env.PR_NUMBER }}"      
+      - name: verify results
+        shell: bash
+        working-directory: packages/drawing-production
+        run: |
+          set -e
+          ls -l
+          FILEPATH="test-results.json"
+          if [ ! -f "$FILEPATH" ]; then
+            echo "Test results file not found"
+            exit 1
+          fi
+
+          FILEDATA=$(cat "$FILEPATH")
+          RESULTS=$(echo "$FILEDATA" | jq '.')
+
+          for TEST in $(echo "$RESULTS" | jq -r '.testResults[] | @base64'); do
+            TEST=$(echo "$TEST" | base64 --decode)
+            ANCESTOR_TITLE=$(echo "$TEST" | jq -r '.assertionResults[0].ancestorTitles[0]')
+            echo "$ANCESTOR_TITLE"
+
+            for ASSERTION in $(echo "$TEST" | jq -r '.assertionResults[] | @base64'); do
+              ASSERTION=$(echo "$ASSERTION" | base64 --decode)
+              STATUS=$(echo "$ASSERTION" | jq -r '.status')
+              TITLE=$(echo "$ASSERTION" | jq -r '.title')
+
+              if [ "$STATUS" = "passed" ]; then
+                echo "  Test passed: $TITLE"
+              elif [ "$STATUS" = "pending" ]; then
+                echo "  Test skipped: $TITLE"
+              else
+                echo "  Test failed: $TITLE"
+                exit 1
+              fi
+            done
+          done
+
+          echo "Summary:"
+          echo "  Total tests: $(echo "$RESULTS" | jq -r '.numTotalTests')"
+          echo "  Total passed: $(echo "$RESULTS" | jq -r '.numPassedTests')"
+          echo "  Total failed: $(echo "$RESULTS" | jq -r '.numFailedTests')"
+          echo "  Total skipped: $(echo "$RESULTS" | jq -r '.numPendingTests')"
+          echo "  Total suites: $(echo "$RESULTS" | jq -r '.numTotalTestSuites')"
+          echo "  Total passed: $(echo "$RESULTS" | jq -r '.numPassedTestSuites')"
+
+      - name: Check the results and delete result file
+        working-directory: packages/drawing-production
+        run: |
+          set -e
+          PR_AUTHOR=$(jq -r '.pull_request.user.login' "$GITHUB_EVENT_PATH")
+          rm -rf test-results.json
+          git config --global user.name "${PR_AUTHOR}"
+          git config --global user.email "${PR_AUTHOR}@users.noreply.github.com"
+          git add .
+          git commit -m "Automated commit by ${PR_AUTHOR}"
+          git push -u -f origin HEAD:refs/heads/${{ github.head_ref }}

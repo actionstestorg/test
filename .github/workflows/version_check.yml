@@ -12,16 +12,82 @@ jobs:
       actions: write
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Download .deb file
-        run: |
-          wget -O iTwinStudioforDevelopers.deb https://autoupdatecdn.bentley.com/itwindesktopplatform/developer/iTwinStudioforDevelopers.deb
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20'
 
-      - name: Get .deb Version
+      - name: Get the installer version from change files
         run: |
-          debPath="iTwinStudioforDevelopers.deb"
-          version=$(dpkg-deb -f "$debPath" Version)
-          echo "DEB Version: $version"
-          echo "deb_version=$version" >> $GITHUB_ENV
+            JSON_FILE="hoist-versions.json"
+            version=$(jq -r 'to_entries | .[0].value' "$JSON_FILE")
+            major=$(echo $version | cut -d. -f1)
+            minor=$(echo $version | cut -d. -f2)
+            echo "Version: $version" 
+            echo "MAJOR=$major" >> $GITHUB_ENV
+            echo "MINOR=$minor" >> $GITHUB_ENV
+            echo "VERSION=$version" >> $GITHUB_ENV
+
+      - name: Get the desired commit hash
+        run: |
+              set -e 
+              check_version() {
+                if [ -f pnpm-workspace.yaml ]; then
+                  yq e '.catalogs.hoisted' pnpm-workspace.yaml | while read -r package version; do
+                    version=$(echo "$version" | sed 's/"//g')
+                    commit_major=$(echo "$version" | cut -d. -f1)
+                    commit_minor=$(echo "$version" | cut -d. -f2)
+                    if [ "$commit_major" -eq "$MAJOR" ] && [ "$commit_minor" -eq "$MINOR" ]; then
+                      echo "Found"
+                      return 1
+                    fi
+                  done
+                fi
+                return 0
+              }
+          
+              git fetch --unshallow 
+          
+              git rev-list --all | while read commit_hash; do
+                git checkout $commit_hash
+                echo "Checking commit $commit_hash"
+                if check_version; then
+                  echo "Found commit $commit_hash"
+                  echo "COMMIT_HASH=$commit_hash" >> $GITHUB_ENV
+                  break
+                fi
+              done
+
+      - name: Create release branch from commit hash
+        run: |
+          git checkout -b release/$VERSION $COMMIT_HASH
+
+      - name: Install dependencies
+        run: |
+          npm install
+
+      - name: Update versions in pnpm-workspace.yaml
+        run: |
+          set -e
+          node scripts/ReleaseUpdate.js ./hoist-versions.json
+          git config user.name "Saurabh Talele"
+          git config user.email "Saurabh.Talele@bentley.com"
+          git commit -a -m "Update versions in pnpm-workspace.yaml"
+          git push origin release/$VERSION
+
+      - name: Create pull request
+        uses: repo-sync/pull-request@v2
+        with:
+          github_token: ${{ secrets.PAT }}
+          source_branch: release/${{env.VERSION}}
+          destination_branch: Test_6
+          pr_title: "Update versions in pnpm-workspace.yaml"
+          pr_body: "This PR updates the versions in pnpm-workspace.yaml"
+          pr_label: "dependencies"
+          
+
+
+           
